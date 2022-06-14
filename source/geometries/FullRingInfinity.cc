@@ -343,7 +343,7 @@ void FullRingInfinity::BuildCryostat()
     db_opsur->SetModel(unified);
     db_opsur->SetFinish(ground);
     db_opsur->SetSigmaAlpha(0.1);
-    db_opsur->SetMaterialPropertiesTable(petopticalprops::ReflectantSurface(80.));
+    db_opsur->SetMaterialPropertiesTable(petopticalprops::ReflectantSurface(0.8));
     new G4LogicalSkinSurface("BORDER", kapton_lat_logic, db_opsur);
     new G4LogicalSkinSurface("BORDER", kapton_int_logic, db_opsur);
     new G4LogicalSkinSurface("BORDER", kapton_ext_logic, db_opsur);
