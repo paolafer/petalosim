@@ -217,7 +217,7 @@ void FullRingInfinity::Construct()
   BuildSensors();
 
   if (charge_det_) {
-    BuildSeparators();
+    //BuildSeparators();
     BuildWires();
   }
 
