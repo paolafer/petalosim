@@ -78,7 +78,8 @@ G4bool ToFSD::ProcessHits(G4Step *step, G4TouchableHistory *)
           hit_tof = (*HC_)[i];
           break;
         }
-    }
+      }
+
   
   // If no hit associated to this sensor exists already,
   // create it and set main properties
@@ -91,7 +92,7 @@ G4bool ToFSD::ProcessHits(G4Step *step, G4TouchableHistory *)
       
       hit_tof = new SensorHit();
       hit_tof->SetPmtID(-pmt_id);
-      hit_tof->SetBinSize(timebinning_);
+      hit_tof->SetBinSize(1*nanosecond);
       hit_tof->SetPosition(touchable->GetTranslation());
       HC_->insert(hit_tof);
     }

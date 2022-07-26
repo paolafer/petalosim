@@ -7,7 +7,7 @@
 
 /Geometry/PetBox/tile_vis true
 /Geometry/PetBox/tile_refl 0.
-/Geometry/PetBox/sipm_time_binning 5. picosecond
+#/Geometry/PetBox/sipm_time_binning 5. picosecond
 /Geometry/PetBox/sipm_pde 0.3
 
 ### GENERATOR
@@ -25,6 +25,8 @@
 #/process/optical/processActivation Scintillation true
 #/process/optical/processActivation Cerenkov      true
 
+/Actions/PetaloEventAction/energy_threshold 509 keV
+
 ### VERBOSITIES
 /run/verbose 0
 /event/verbose 0
@@ -36,5 +38,5 @@
 
 ### OUTPUT FILE
 /nexus/persistency/start_id 0
-/nexus/persistency/outputFile petbox.pet
+/nexus/persistency/outputFile petbox
 

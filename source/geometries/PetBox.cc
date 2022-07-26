@@ -708,8 +708,6 @@ void PetBox::BuildSensors()
       }
     }
   }
-
-
 }
 
 G4ThreeVector PetBox::GenerateVertex(const G4String &region) const
