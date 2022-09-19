@@ -31,7 +31,7 @@
 G4_DECLARE_PHYSCONSTR_FACTORY(PetaloPhysics);
 
 PetaloPhysics::PetaloPhysics() : G4VPhysicsConstructor("PetaloPhysics"),
-                                 risetime_(false), noCompt_(false), nest_(false)
+                                 risetime_(false), noCompt_(false), nest_(false), stack_el_(false)
 {
   msg_ = new G4GenericMessenger(this, "/PhysicsList/Petalo/",
                                 "Control commands of the nexus physics list.");
@@ -44,6 +44,9 @@ PetaloPhysics::PetaloPhysics() : G4VPhysicsConstructor("PetaloPhysics"),
 
   msg_->DeclareProperty("nest", nest_,
                         "If true, NEST is used for scintillation.");
+
+  msg_->DeclareProperty("stack_el", stack_el_,
+                        "If true, thermal electrons are created in NEST.");
 }
 
 PetaloPhysics::~PetaloPhysics()
@@ -113,7 +116,7 @@ void PetaloPhysics::ConstructProcess()
     NEST::NESTProc* theNESTScintillationProcess =
       new NEST::NESTProc("S1", fElectromagnetic, petaloCalc, petalo);
     theNESTScintillationProcess->SetDetailedSecondaries(true); // this is to use the full scintillation spectrum of LXe.
-    theNESTScintillationProcess->SetStackElectrons(true); //false if only light is collected
+    theNESTScintillationProcess->SetStackElectrons(stack_el_); //false if only light is collected
 
     auto aParticleIterator = GetParticleIterator();
     aParticleIterator->reset();

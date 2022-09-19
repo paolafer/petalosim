@@ -35,6 +35,8 @@ private:
 
   G4bool nest_; ///< Switch on/off NEST
 
+  G4bool stack_el_; ///< Switch on/off thermal electron production
+
   G4GenericMessenger *msg_;
   WavelengthShifting *wls_;
   PositronAnnihilation* pos_annihil_;
