@@ -1,22 +1,23 @@
 // ----------------------------------------------------------------------------
-// nexus | NESTRunAction.cc
+// petalosim | NESTRunAction.cc
 //
 // This action allows one to save NEST information about photons and
 // thermal electrons.
 // A message at the beginning and at the end of the simulation is printed.
 //
-// The NEXT Collaboration
+// The PETALO Collaboration
 // ----------------------------------------------------------------------------
 
 #include "NESTRunAction.h"
-#include "FactoryBase.h"
+//#include "PetaloUtils.h"
+#include "PetaloPersistencyManager.h"
+#include "nexus/FactoryBase.h"
 
 #include <NESTProc.hh>
 
 #include <G4Run.hh>
 #include <G4ProcessTable.hh>
 
-using namespace nexus;
 
 REGISTER_CLASS(NESTRunAction, G4UserRunAction)
 
@@ -41,7 +42,10 @@ void NESTRunAction::BeginOfRunAction(const G4Run* run)
   for (size_t i = 0; i < NESTProcesses->size(); i++) {
     NEST::NESTProc* nestProc = dynamic_cast<NEST::NESTProc*> ((*NESTProcesses)[i]);
     if (nestProc) {
-      auto analysisTriggerFunction = std::bind(&nEXOAnalysis::StoreNESTLineages, this, std::placeholders::_1);
+      PetaloPersistencyManager* pm =
+      dynamic_cast<PetaloPersistencyManager *>(G4VPersistencyManager::GetPersistencyManager());
+      auto analysisTriggerFunction = std::bind(&PetaloPersistencyManager::StoreNESTLineages,
+                                               pm, std::placeholders::_1);
       nestProc->SetAnalysisTrigger(analysisTriggerFunction);
     }
   }
