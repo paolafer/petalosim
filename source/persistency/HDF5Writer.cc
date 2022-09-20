@@ -20,7 +20,7 @@
 HDF5Writer::HDF5Writer():
   file_(0), irun_(0), ismp_(0),
   ismp_tof_(0), ihit_(0),
-  ipart_(0), ipos_(0), istep_(0), icharge_(0)
+  ipart_(0), ipos_(0), istep_(0), icharge_(0), inesthit_(0)
 {
 }
 
@@ -65,6 +65,10 @@ void HDF5Writer::Open(std::string fileName, bool debug)
   std::string charge_data_table_name = "charge_response";
   memtypeChargeData_ = createChargeDataType();
   chargeDataTable_ = createTable(group_, charge_data_table_name, memtypeChargeData_);
+
+  std::string nest_hit_info_table_name = "nest_hits";
+  memtypeNESTHitInfo_ = createNESTHitInfoType();
+  NESThitInfoTable_ = createTable(group_, nest_hit_info_table_name, memtypeNESTHitInfo_);
 
   if (debug) {
     std::string debug_group_name = "/DEBUG";
@@ -230,4 +234,23 @@ void HDF5Writer::WriteChargeDataInfo(int evt_number, unsigned int sensor_id, uns
   writeChargeData(&chargeData, chargeDataTable_, memtypeChargeData_, icharge_);
 
   icharge_++;
+}
+
+void HDF5Writer::WriteNESTHitInfo(int evt_number, int particle_indx, float hit_position_x, float hit_position_y, float hit_position_z, float hit_time, float hit_energy, int photons, int electrons, const char* label)
+{
+  nest_hit_info_t nestInfo;
+  nestInfo.event_id = evt_number;
+  memset(nestInfo.label, 0, STRLEN);
+  nestInfo.x = hit_position_x;
+  nestInfo.y = hit_position_y;
+  nestInfo.z = hit_position_z;
+  nestInfo.time = hit_time;
+  nestInfo.energy = hit_energy;
+  strcpy(nestInfo.label, label);
+  nestInfo.particle_id = particle_indx;
+  nestInfo.photons = photons;
+  nestInfo.electrons = electrons;
+  writeNESTHit(&nestInfo,  NESThitInfoTable_, memtypeNESTHitInfo_, inesthit_);
+
+  inesthit_++;
 }

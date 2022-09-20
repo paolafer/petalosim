@@ -103,6 +103,19 @@ typedef struct{
     unsigned int charge;
   } charge_data_t;
 
+  typedef struct{
+    int32_t event_id;
+    float x;
+    float y;
+    float z;
+    float time;
+    float energy;
+    char label[STRLEN];
+    int particle_id;
+    int photons;
+    int electrons;
+  } nest_hit_info_t;
+
   hsize_t createRunType();
   hsize_t createSensorDataType();
   hsize_t createSensorTofType();
@@ -111,6 +124,7 @@ typedef struct{
   hsize_t createSensorPosType();
   hsize_t createStepType();
   hsize_t createChargeDataType();
+  hsize_t createNESTHitInfoType();
 
   hid_t createTable(hid_t group, std::string& table_name, hsize_t memtype);
   hid_t createGroup(hid_t file, std::string& groupName);
@@ -123,6 +137,7 @@ typedef struct{
   void writeSnsPos(sns_pos_t* snsPos, hid_t dataset, hid_t memtype, hsize_t counter);
   void writeStep(step_info_t* step, hid_t dataset, hid_t memtype, hsize_t counter);
   void writeChargeData(charge_data_t* chargeData, hid_t dataset, hid_t memtype, hsize_t counter);
+  void writeNESTHit(nest_hit_info_t* nestHitInfo, hid_t dataset, hid_t memtype, hsize_t counter);
 
 
 #endif

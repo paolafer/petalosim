@@ -44,6 +44,7 @@ public:
                  float initial_x, float initial_y, float initial_z,
                  float final_x, float final_y, float final_z);
   void WriteChargeDataInfo(int evt_number, unsigned int sensor_id, unsigned int time_bin, unsigned int charge);
+  void WriteNESTHitInfo(int evt_number, int particle_indx, float hit_position_x, float hit_position_y, float hit_position_z, float hit_time, float hit_energy, int photons, int electrons, const char *label);
 
 private:
   size_t file_; ///< HDF5 file
@@ -62,6 +63,7 @@ private:
   size_t snsPosTable_;
   size_t stepTable_;
   size_t chargeDataTable_;
+  size_t NESThitInfoTable_;
 
   size_t memtypeRun_;
   size_t memtypeSnsData_;
@@ -71,15 +73,17 @@ private:
   size_t memtypeSnsPos_;
   size_t memtypeStep_;
   size_t memtypeChargeData_;
+  size_t memtypeNESTHitInfo_;
 
   size_t irun_;     ///< counter for configuration parameters
-  size_t ismp_;     ///< counter for written waveform samples
-  size_t ismp_tof_; ///< counter for written waveform samples (first bins only)
-  size_t ihit_;     ///< counter for true information
+  size_t ismp_;     ///< counter for total sensor charge
+  size_t ismp_tof_; ///< counter for waveform samples (first bins only)
+  size_t ihit_;     ///< counter for hit information
   size_t ipart_;    ///< counter for particle information
   size_t ipos_;     ///< counter for sensor positions
   size_t istep_;    ///< counter for steps
   size_t icharge_;  ///< counter for charge
+  size_t inesthit_; ///< counter for NEST true information
 };
 
 #endif

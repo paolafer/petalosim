@@ -155,6 +155,29 @@ hsize_t createChargeDataType()
   return memtype;
 }
 
+hsize_t createNESTHitInfoType()
+{
+  // hsize_t point3d_dim[1] = {3};
+  // hid_t point3d = H5Tarray_create(H5T_NATIVE_FLOAT, 1, point3d_dim);
+
+  hid_t strtype = H5Tcopy(H5T_C_S1);
+  H5Tset_size (strtype, STRLEN);
+
+  //Create compound datatype for the table
+  hsize_t memtype = H5Tcreate (H5T_COMPOUND, sizeof (nest_hit_info_t));
+  H5Tinsert (memtype, "event_id", HOFFSET (nest_hit_info_t, event_id), H5T_NATIVE_INT32);
+  H5Tinsert (memtype, "x", HOFFSET (nest_hit_info_t, x), H5T_NATIVE_FLOAT);
+  H5Tinsert (memtype, "y", HOFFSET (nest_hit_info_t, y), H5T_NATIVE_FLOAT);
+  H5Tinsert (memtype, "z", HOFFSET (nest_hit_info_t, z), H5T_NATIVE_FLOAT);
+  H5Tinsert (memtype, "time", HOFFSET (nest_hit_info_t, time), H5T_NATIVE_FLOAT);
+  H5Tinsert (memtype, "energy", HOFFSET (nest_hit_info_t, energy), H5T_NATIVE_FLOAT);
+  H5Tinsert (memtype, "label", HOFFSET (nest_hit_info_t, label),strtype);
+  H5Tinsert (memtype, "particle_id", HOFFSET (nest_hit_info_t, particle_id),H5T_NATIVE_INT);
+  H5Tinsert (memtype, "photons", HOFFSET (nest_hit_info_t, photons),H5T_NATIVE_INT);
+  H5Tinsert (memtype, "electrons", HOFFSET (nest_hit_info_t, electrons),H5T_NATIVE_INT);
+  return memtype;
+}
+
 hid_t createTable(hid_t group, std::string& table_name, hsize_t memtype)
 {
   //Create 1D dataspace (evt number). First dimension is unlimited (initially 0)
@@ -355,6 +378,26 @@ void writeChargeData(charge_data_t* chargeData, hid_t dataset, hid_t memtype, hs
   hsize_t count[1] = {1};
   H5Sselect_hyperslab(file_space, H5S_SELECT_SET, start, NULL, count, NULL);
   H5Dwrite(dataset, memtype, memspace, file_space, H5P_DEFAULT, chargeData);
+  H5Sclose(file_space);
+  H5Sclose(memspace);
+}
+
+void writeNESTHit(nest_hit_info_t* nestHitInfo, hid_t dataset, hid_t memtype, hsize_t counter)
+{
+  hid_t memspace, file_space;
+
+  const hsize_t n_dims = 1;
+  hsize_t dims[n_dims] = {1};
+  memspace = H5Screate_simple(n_dims, dims, NULL);
+
+  dims[0] = counter+1;
+  H5Dset_extent(dataset, dims);
+
+  file_space = H5Dget_space(dataset);
+  hsize_t start[1] = {counter};
+  hsize_t count[1] = {1};
+  H5Sselect_hyperslab(file_space, H5S_SELECT_SET, start, NULL, count, NULL);
+  H5Dwrite(dataset, memtype, memspace, file_space, H5P_DEFAULT, nestHitInfo);
   H5Sclose(file_space);
   H5Sclose(memspace);
 }
