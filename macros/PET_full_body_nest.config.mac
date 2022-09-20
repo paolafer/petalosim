@@ -8,7 +8,7 @@
 /Geometry/FullRingInfinity/instrumented_faces 1
 /Geometry/FullRingInfinity/specific_vertex 0. 0. 0. cm
 
-/Geometry/FullRingInfinity/charge_detector true
+/Geometry/FullRingInfinity/charge_detector false
 /Geometry/FullRingInfinity/wire_pitch 4. mm
 /Geometry/FullRingInfinity/z_separators 10
 /Geometry/FullRingInfinity/phi_separators 10
@@ -41,4 +41,5 @@
 /nexus/persistency/start_id 0
 /nexus/persistency/sns_only false
 /nexus/persistency/tof_time 5. nanosecond
+/nexus/persistency/nest_hit_table true
 /nexus/persistency/outputFile full_body_nest
