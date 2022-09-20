@@ -48,7 +48,7 @@ PetaloPersistencyManager::PetaloPersistencyManager():
   efield_(0), event_type_("other"),
   saved_evts_(0), interacting_evts_(0), nevt_(0), start_id_(0), first_evt_(true),
   thr_charge_(0), tof_time_(50.*nanosecond), sns_only_(false),
-  save_tot_charge_(true), h5writer_(0)
+  save_tot_charge_(true), nest_hit_table_(false), h5writer_(0)
 {
   msg_ = new G4GenericMessenger(this, "/nexus/persistency/");
   msg_->DeclareMethod("outputFile", &PetaloPersistencyManager::OpenFile, "");
@@ -59,6 +59,8 @@ PetaloPersistencyManager::PetaloPersistencyManager():
   msg_->DeclareProperty("thr_charge", thr_charge_, "Threshold for the charge saved in file.");
   msg_->DeclareProperty("sns_only", sns_only_, "If true, no true information is saved.");
   msg_->DeclareProperty("save_tot_charge", save_tot_charge_, "If true, total charge is saved.");
+  msg_->DeclareProperty("nest_hit_table", nest_hit_table_,
+                        "If true, the NEST hit table is saved instead of the petalosim one.");
 
   G4GenericMessenger::Command& time_cmd =
     msg_->DeclareProperty("tof_time", tof_time_, "Time saved in tof table per sensor");
@@ -127,11 +129,11 @@ G4bool PetaloPersistencyManager::Store(const G4Event* event)
   if (store_steps_)
     StoreSteps();
 
-  if (sns_only_ == false) {
+  if (sns_only_ == false)
     StoreTrajectories(event->GetTrajectoryContainer());
-  }
 
-  StoreHits(event->GetHCofThisEvent());
+  if (!nest_hit_table_)
+    StoreHits(event->GetHCofThisEvent());
 
   nevt_++;
 
@@ -264,6 +266,8 @@ void PetaloPersistencyManager::StoreIonizationHits(G4VHitsCollection* hc)
    if (!hits) return;
 
    std::string sdname = hits->GetSDname();
+
+   //  G4cout << "*** G4 ***" << G4endl;
 
    for (size_t i=0; i<hits->entries(); i++) {
 
@@ -459,6 +463,25 @@ void PetaloPersistencyManager::StoreSteps()
   }
   sa->Reset();
 }
+
+
+void PetaloPersistencyManager::StoreNESTLineages(std::vector<NEST::Lineage> lineages) {
+
+  if (nest_hit_table_) {
+    vector<float> x, y, z, t, ph, el;
+    for (auto lin : lineages){
+      if (lin.hits.size()==0) continue;
+      for (auto hit: lin.hits){
+
+        h5writer_->WriteNESTHitInfo(nevt_, -1,
+                                    hit.xyz.x()/mm, hit.xyz.y()/mm, hit.xyz.z()/mm,
+                                    hit.t/ns, hit.E/MeV, hit.result.photons, hit.result.electrons,
+                                    "ACTIVE");
+      }
+    }
+  }
+}
+
 
 G4bool PetaloPersistencyManager::Store(const G4Run*)
 {
