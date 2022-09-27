@@ -160,7 +160,7 @@ void PetaloPersistencyManager::StoreTrajectories(G4TrajectoryContainer* tc)
       std::string key, value;
       std::getline(init_read, key, ' ');
       std::getline(init_read, value);
-      if ((key == "/nexus/RegisterTrackingAction") && (value == "PetOpticalTrackingAction")) {
+      if ((key == "/nexus/RegisterTrackingAction") && (value == "OpticalTrackingAction")) {
         save_opt_phot = true;
         break;
       }
@@ -473,7 +473,7 @@ G4bool PetaloPersistencyManager::Store(const G4Run*)
   key = "tof_bin_size";
   h5writer_->WriteRunInfo(key, (std::to_string(tof_bin_size_/picosecond)+" ps").c_str());
   key = "wire_bin_size";
-  h5writer_->WriteRunInfo(key, (std::to_string(wire_bin_size_/microsecond)+" us").c_str());
+  h5writer_->WriteRunInfo(key, (std::to_string(wire_bin_size_/nanosecond)+" ns").c_str());
   key = "interacting_events";
   h5writer_->WriteRunInfo(key, std::to_string(interacting_evts_).c_str());
   key = "electric_field";

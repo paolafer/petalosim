@@ -75,9 +75,9 @@ void JaszczakPhantom::Construct()
     new G4Tubs(cyl_name, 0, (cylinder_inner_diam_+2*cylinder_thickn_)/2,
                (cylinder_height_+2*cylinder_thickn_)/2., 0, twopi);
 
-  G4Material* aluminum = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
+  G4Material* plexiglass = G4NistManager::Instance()->FindOrBuildMaterial("G4_PLEXIGLASS");
   auto cylinder_logic =
-    new G4LogicalVolume(cylinder_solid, aluminum, cyl_name);
+    new G4LogicalVolume(cylinder_solid, plexiglass, cyl_name);
 
   this->SetLogicalVolume(cylinder_logic);
 

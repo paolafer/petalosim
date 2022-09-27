@@ -74,6 +74,7 @@ void SiPMpetVUV::Construct()
   G4Box *sipm_solid = new G4Box("SIPMpet", sipm_x / 2., sipm_y / 2., sipm_z / 2);
 
   G4Material *sipm_mat = petmaterials::FR4();
+  sipm_mat->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
   G4LogicalVolume *sipm_logic =
       new G4LogicalVolume(sipm_solid, sipm_mat, "SIPMpet");
 

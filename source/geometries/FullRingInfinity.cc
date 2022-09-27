@@ -217,7 +217,7 @@ void FullRingInfinity::Construct()
   BuildSensors();
 
   if (charge_det_) {
-    BuildSeparators();
+//    BuildSeparators();
     BuildWires();
   }
 
@@ -252,7 +252,8 @@ void FullRingInfinity::BuildCryostat()
       new G4Tubs("VACUUM_VESSEL", vessel_int_radius, vessel_ext_radius,
                  vessel_width/2., 0, twopi);
     G4Material* steel = materials::Steel();
-        G4LogicalVolume* vessel_logic =
+    steel->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
+    G4LogicalVolume* vessel_logic =
           new G4LogicalVolume(vessel_solid, steel, "VACUUM_VESSEL");
     new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), vessel_logic,
 		      "VACUUM_VESSEL", lab_logic_, false, 0, true);
@@ -262,6 +263,7 @@ void FullRingInfinity::BuildCryostat()
       new G4Tubs("VACUUM", vacuum_int_radius, vacuum_ext_radius,
                  lxe_container_width/2., 0, twopi);
     G4Material* vacuum = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+    vacuum->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
     G4LogicalVolume* vacuum_logic =
           new G4LogicalVolume(vacuum_solid, vacuum, "VACUUM");
     new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), vacuum_logic,
@@ -272,6 +274,7 @@ void FullRingInfinity::BuildCryostat()
                  lxe_container_width/2., 0, twopi);
 
     G4Material* aluminum = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
+    aluminum->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
     G4LogicalVolume* lxe_container_logic =
       new G4LogicalVolume(lxe_container_solid, aluminum, "CONTAINER");
     new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), lxe_container_logic,
@@ -309,6 +312,7 @@ void FullRingInfinity::BuildCryostat()
     // Reflectant panels
     G4Material* kapton =
         G4NistManager::Instance()->FindOrBuildMaterial("G4_KAPTON");
+    kapton->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
 
     G4Tubs* kapton_int_solid =
         new G4Tubs("KAPTON", inner_radius_ - kapton_thickn_, inner_radius_,
@@ -343,7 +347,7 @@ void FullRingInfinity::BuildCryostat()
     db_opsur->SetModel(unified);
     db_opsur->SetFinish(ground);
     db_opsur->SetSigmaAlpha(0.1);
-    db_opsur->SetMaterialPropertiesTable(petopticalprops::ReflectantSurface(80.));
+    db_opsur->SetMaterialPropertiesTable(petopticalprops::ReflectantSurface(0.8));
     new G4LogicalSkinSurface("BORDER", kapton_lat_logic, db_opsur);
     new G4LogicalSkinSurface("BORDER", kapton_int_logic, db_opsur);
     new G4LogicalSkinSurface("BORDER", kapton_ext_logic, db_opsur);
