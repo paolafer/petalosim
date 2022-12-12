@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------------------
 
 #include "PetBox.h"
-#include "TileHamamatsuVUV.h"
+#include "TileHamamatsuVUVNoQuartz.h"
 #include "TileHamamatsuBlue.h"
 #include "TileFBK.h"
 #include "PetMaterialsList.h"
@@ -275,7 +275,7 @@ void PetBox::BuildBox()
   // TILES /////////////////////////////////////////////////////
 
   if (tile_type_d_ == "HamamatsuVUV") {
-    tile_ = new TileHamamatsuVUV();
+    tile_ = new TileHamamatsuVUVNoQuartz();
     dist_dice_flange_ = dist_ham_vuv_;
   } else if (tile_type_d_ == "HamamatsuBlue") {
     tile_ = new TileHamamatsuBlue();
@@ -302,7 +302,7 @@ void PetBox::BuildBox()
   if (tile_type_d_ != tile_type_c_) {
     // TILE TYPE COINCIDENCE PLANE
     if (tile_type_c_ == "HamamatsuVUV") {
-      tile2_ = new TileHamamatsuVUV();
+      tile2_ = new TileHamamatsuVUVNoQuartz();
       dist_dice_flange2_ = dist_ham_vuv_;
     } else if (tile_type_c_ == "HamamatsuBlue") {
       tile2_ = new TileHamamatsuBlue();
@@ -519,7 +519,7 @@ void PetBox::BuildBox()
     G4Box *teflon_block_solid =
       new G4Box("TEFLON_BLOCK", teflon_block_xy/2., teflon_block_xy/2., teflon_block_thick/2.);
 
-    G4double block_z_pos = ih_z_size_/2. + teflon_block_thick/2.;
+    G4double block_z_pos = ih_z_size_/2. + teflon_block_thick/2. + 0.55 * mm;
 
     G4Material *teflon = G4NistManager::Instance()->FindOrBuildMaterial("G4_TEFLON");
     teflon->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
