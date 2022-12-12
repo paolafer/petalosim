@@ -6,7 +6,7 @@
 /Geometry/PetBox/add_teflon_block 1
 
 /Geometry/PetBox/tile_vis true
-/Geometry/PetBox/tile_refl 1.
+/Geometry/PetBox/tile_refl 0.999
 /Geometry/PetBox/sipm_time_binning 5. picosecond
 
 ### GENERATOR
@@ -18,7 +18,7 @@
 #/Generator/SingleParticle/max_energy 1 keV
 #/Generator/SingleParticle/region CENTER
 
-/Actions/PetSensorsEventAction/min_charge 50
+#/Actions/PetSensorsEventAction/min_charge 50
 
 ### PHYSICS
 #/process/optical/processActivation Scintillation true

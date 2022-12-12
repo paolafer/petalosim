@@ -153,22 +153,22 @@ void PetBox::BuildBox()
 
   G4double LXe_size = box_size_ - 2. * box_thickness_;
   G4Box *active_solid =
-      new G4Box("LXe", LXe_size/2., LXe_size/2., LXe_size/2.);
+      new G4Box("ACTIVE_OUT", LXe_size/2., LXe_size/2., LXe_size/2.);
 
   G4Material *LXe = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
-  LXe->SetMaterialPropertiesTable(opticalprops::LXe());
+  // LXe->SetMaterialPropertiesTable(opticalprops::LXe());
   active_logic_ =
-      new G4LogicalVolume(active_solid, LXe, "ACTIVE");
+      new G4LogicalVolume(active_solid, LXe, "ACTIVE_OUT");
 
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
-                    active_logic_, "ACTIVE", box_logic, false, 0, false);
+                    active_logic_, "ACTIVE_OUT", box_logic, false, 0, false);
 
   // Set the ACTIVE volume as an ionization sensitive det
-  IonizationSD *ionisd = new IonizationSD("/PETALO/ACTIVE");
-  G4SDManager::GetSDMpointer()->AddNewDetector(ionisd);
+   IonizationSD *ionisd = new IonizationSD("/PETALO/ACTIVE");
+   G4SDManager::GetSDMpointer()->AddNewDetector(ionisd);
 
-  active_logic_->SetSensitiveDetector(ionisd);
-  active_logic_->SetUserLimits(new G4UserLimits(max_step_size_));
+  // active_logic_->SetSensitiveDetector(ionisd);
+  // active_logic_->SetUserLimits(new G4UserLimits(max_step_size_));
 
   // Aluminum cylinder /////////////////////////////////////////
   G4double aluminum_cyl_rad = 40. * mm;
@@ -533,8 +533,10 @@ void PetBox::BuildBox()
     G4Box *teflon_hole_solid =
       new G4Box("ACTIVE", teflon_holes_xy/2., teflon_holes_xy/2., teflon_holes_depth/2.);
 
+    G4Material *LXe_true = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
+    LXe_true->SetMaterialPropertiesTable(opticalprops::LXe());
     G4LogicalVolume *teflon_hole_logic =
-       new G4LogicalVolume(teflon_hole_solid, LXe, "ACTIVE");
+       new G4LogicalVolume(teflon_hole_solid, LXe_true, "ACTIVE");
 
     // Set the ACTIVE volume as an ionization sensitive det
     teflon_hole_logic->SetSensitiveDetector(ionisd);
