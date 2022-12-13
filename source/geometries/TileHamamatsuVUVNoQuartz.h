@@ -15,7 +15,7 @@
 
 class G4GenericMessenger;
 
-class SiPMHamamatsuVUV_pde100;
+class SiPMHamamatsuVUV;
 
 using namespace nexus;
 
@@ -45,7 +45,7 @@ private:
   G4double quartz_rindex_;
   G4double quartz_thick_;
 
-  SiPMHamamatsuVUV_pde100 *sipm_;
+  SiPMHamamatsuVUV *sipm_;
 };
 
 #endif

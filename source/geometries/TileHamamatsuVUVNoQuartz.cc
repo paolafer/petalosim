@@ -9,7 +9,7 @@
 #include "TileHamamatsuVUVNoQuartz.h"
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
-#include "SiPMHamamatsuVUV_pde100.h"
+#include "SiPMHamamatsuVUV.h"
 
 #include "nexus/Visibilities.h"
 #include "nexus/IonizationSD.h"
@@ -43,7 +43,7 @@ TileHamamatsuVUVNoQuartz::TileHamamatsuVUVNoQuartz() : TileGeometryBase(),
                                        quartz_thick_(0.6 * mm)
 
 {
-  sipm_ = new SiPMHamamatsuVUV_pde100();
+  sipm_ = new SiPMHamamatsuVUV();
 }
 
 TileHamamatsuVUVNoQuartz::~TileHamamatsuVUVNoQuartz()
