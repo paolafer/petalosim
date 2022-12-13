@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------------------
 
 #include "PetBox.h"
-#include "TileHamamatsuVUVNoQuartz.h"
+#include "TileHamamatsuVUV.h"
 #include "TileHamamatsuBlue.h"
 #include "TileFBK.h"
 #include "PetMaterialsList.h"
@@ -275,7 +275,7 @@ void PetBox::BuildBox()
   // TILES /////////////////////////////////////////////////////
 
   if (tile_type_d_ == "HamamatsuVUV") {
-    tile_ = new TileHamamatsuVUVNoQuartz();
+    tile_ = new TileHamamatsuVUV();
     dist_dice_flange_ = dist_ham_vuv_;
   } else if (tile_type_d_ == "HamamatsuBlue") {
     tile_ = new TileHamamatsuBlue();
@@ -302,7 +302,7 @@ void PetBox::BuildBox()
   if (tile_type_d_ != tile_type_c_) {
     // TILE TYPE COINCIDENCE PLANE
     if (tile_type_c_ == "HamamatsuVUV") {
-      tile2_ = new TileHamamatsuVUVNoQuartz();
+      tile2_ = new TileHamamatsuVUV();
       dist_dice_flange2_ = dist_ham_vuv_;
     } else if (tile_type_c_ == "HamamatsuBlue") {
       tile2_ = new TileHamamatsuBlue();

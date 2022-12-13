@@ -16,7 +16,7 @@ class G4GenericMessenger;
 class G4LogicalVolume;
 class G4VPhysicalVolume;
 
-class TileHamamatsuVUVNoQuartz;
+class TileHamamatsuVUV;
 class TileHamamatsuBlue;
 class TileFBK;
 
