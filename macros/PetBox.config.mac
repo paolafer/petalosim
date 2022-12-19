@@ -8,13 +8,14 @@
 /Geometry/PetBox/tile_vis true
 /Geometry/PetBox/tile_refl 0.999
 /Geometry/PetBox/sipm_time_binning 5. picosecond
+#/Geometry/PetBox/specific_vertex 4 4 0 mm
 
 
 ### GENERATOR
 /Generator/IonGenerator/region SOURCE
 /Generator/IonGenerator/atomic_number 11
 /Generator/IonGenerator/mass_number 22
-#/Generator/SingleParticle/particle opticalphoton
+#/Generator/SingleParticle/particle geantino
 #/Generator/SingleParticle/min_energy 1  eV
 #/Generator/SingleParticle/max_energy 1 keV
 #/Generator/SingleParticle/region AD_HOC

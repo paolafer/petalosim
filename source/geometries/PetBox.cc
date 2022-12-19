@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------------------
 
 #include "PetBox.h"
-#include "TileHamamatsuVUV.h"
+#include "TileHamamatsuVUVNoLXe.h"
 #include "TileHamamatsuBlue.h"
 #include "TileFBK.h"
 #include "PetMaterialsList.h"
@@ -275,7 +275,7 @@ void PetBox::BuildBox()
   // TILES /////////////////////////////////////////////////////
 
   if (tile_type_d_ == "HamamatsuVUV") {
-    tile_ = new TileHamamatsuVUV();
+    tile_ = new TileHamamatsuVUVNoLXe();
     dist_dice_flange_ = dist_ham_vuv_;
   } else if (tile_type_d_ == "HamamatsuBlue") {
     tile_ = new TileHamamatsuBlue();
@@ -302,7 +302,7 @@ void PetBox::BuildBox()
   if (tile_type_d_ != tile_type_c_) {
     // TILE TYPE COINCIDENCE PLANE
     if (tile_type_c_ == "HamamatsuVUV") {
-      tile2_ = new TileHamamatsuVUV();
+      tile2_ = new TileHamamatsuVUVNoLXe();
       dist_dice_flange2_ = dist_ham_vuv_;
     } else if (tile_type_c_ == "HamamatsuBlue") {
       tile2_ = new TileHamamatsuBlue();
@@ -636,7 +636,7 @@ void PetBox::BuildSensors()
   G4String vol_name;
   G4int copy_no = 0;
 
-  G4double z_pos = -box_size_/2. + box_thickness_ + dist_dice_flange_ + tile_thickn_/2.;
+  G4double z_pos = -box_size_/2. + box_thickness_ + dist_dice_flange_ + tile_thickn_/2. - 0.6*mm;
   for (G4int j = 0; j < n_tile_rows_; j++)
   {
     G4double y_pos = full_col_size_/2. - tile_size_y/2. - j*tile_size_y;
