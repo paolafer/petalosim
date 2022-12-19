@@ -636,7 +636,7 @@ void PetBox::BuildSensors()
   G4String vol_name;
   G4int copy_no = 0;
 
-  G4double z_pos = -box_size_/2. + box_thickness_ + dist_dice_flange_ + tile_thickn_/2.;
+  G4double z_pos = -box_size_/2. + box_thickness_ + dist_dice_flange_ + tile_thickn_/2. - 1.2*mm;
   for (G4int j = 0; j < n_tile_rows_; j++)
   {
     G4double y_pos = full_col_size_/2. - tile_size_y/2. - j*tile_size_y;
