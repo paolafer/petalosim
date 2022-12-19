@@ -519,7 +519,7 @@ void PetBox::BuildBox()
     G4Box *teflon_block_solid =
       new G4Box("TEFLON_BLOCK", teflon_block_xy/2., teflon_block_xy/2., teflon_block_thick/2.);
 
-    G4double block_z_pos = ih_z_size_/2. + teflon_block_thick/2. + 0.55 * mm;
+    G4double block_z_pos = ih_z_size_/2. + teflon_block_thick/2.; // + 0.55 * mm;
 
     G4Material *teflon = G4NistManager::Instance()->FindOrBuildMaterial("G4_TEFLON");
     teflon->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
