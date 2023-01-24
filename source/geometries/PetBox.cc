@@ -81,7 +81,9 @@ PetBox::PetBox() : GeometryBase(),
                    dist_sipms_panel_sipms_(0.3 * mm),
                    wls_depth_(0.001 * mm),
                    add_teflon_block_(0),
-                   max_step_size_(1. * mm)
+                   max_step_size_(1. * mm),
+                   temp_(161 * kelvin),
+                   pressure_(1 * bar)
 
 {
   // Messenger
@@ -113,6 +115,22 @@ PetBox::PetBox() : GeometryBase(),
 
   msg_->DeclareProperty("add_teflon_block", add_teflon_block_,
     "Boolean to add a teflon block that reduces the xenon volume");
+
+  G4GenericMessenger::Command &temp_cmd =
+    msg_->DeclareProperty("temperature", temp_,
+                          "Temperature of LXe");
+  temp_cmd.SetUnitCategory("Temperature");
+  temp_cmd.SetParameterName("temperature", false);
+  temp_cmd.SetRange("temperature>0.");
+
+  G4GenericMessenger::Command &press_cmd =
+    msg_->DeclareProperty("pressure", pressure_,
+                          "Pressure of LXe");
+  press_cmd.SetUnitCategory("Pressure");
+  press_cmd.SetParameterName("pressure", false);
+  press_cmd.SetRange("pressure>0.");
+
+
 }
 
 PetBox::~PetBox()
@@ -156,7 +174,7 @@ void PetBox::BuildBox()
       new G4Box("LXe", LXe_size/2., LXe_size/2., LXe_size/2.);
 
   G4Material *LXe = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
-  LXe->SetMaterialPropertiesTable(opticalprops::LXe());
+  LXe->SetMaterialPropertiesTable(petopticalprops::LXe(temp_, pressure_));
   active_logic_ =
       new G4LogicalVolume(active_solid, LXe, "ACTIVE");
 

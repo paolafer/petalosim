@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------------------
 
 #include "PetOpticalMaterialProperties.h"
+#include "PetXenonProperties.h"
 
 #include "nexus/XenonProperties.h"
 #include "nexus/SellmeierEquation.h"
@@ -158,6 +159,76 @@ G4MaterialPropertiesTable* GlassEpoxy()
 
   return mpt;
 }
+
+
+  G4MaterialPropertiesTable* LXe(G4double temperature, G4double pressure)
+  {
+    /// The time constants are taken from E. Hogenbirk et al 2018 JINST 13 P10031
+    G4MaterialPropertiesTable* LXe_mpt = new G4MaterialPropertiesTable();
+
+    const G4int ri_entries = 200;
+    G4double eWidth =
+      (opticalprops::optPhotMaxE_ - opticalprops::optPhotMinE_) / ri_entries;
+
+    std::vector<G4double> ri_energy;
+    for (int i=0; i<ri_entries; i++) {
+      ri_energy.push_back(opticalprops::optPhotMinE_ + i * eWidth);
+    }
+
+    G4double density = GetLXeDensity(temperature/kelvin, pressure/bar);
+    G4cout << "LXe density = " << density/g*cm3 << G4endl;
+
+    std::vector<G4double> ri_index;
+    for (G4int i=0; i<ri_entries; i++) {
+      ri_index.push_back(XenonRefractiveIndex(ri_energy[i], density));
+    }
+    LXe_mpt->AddProperty("RINDEX", ri_energy, ri_index);
+
+    // for (G4int i=ri_entries-1; i>=0; i--) {
+    //   G4cout << h_Planck*c_light/ri_energy[i]/nanometer << " nm, " << rindex[i] << G4endl;
+    // }
+
+    // Sampling from ~151 nm to 200 nm <----> from 6.20625 eV to 8.21 eV
+    const G4int sc_entries = 500;
+    const G4double minE = 6.20625*eV;
+    eWidth = (opticalprops::optPhotMaxE_ - minE) / sc_entries;
+
+    std::vector<G4double> sc_energy;
+    for (G4int j=0; j<sc_entries; j++){
+      sc_energy.push_back(minE + j * eWidth);
+    }
+    std::vector<G4double> intensity;
+    for (G4int i=0; i<sc_entries; i++) {
+      intensity.push_back(LXeScintillation(sc_energy[i]));
+    }
+
+    LXe_mpt->AddProperty("SCINTILLATIONCOMPONENT1", sc_energy, intensity);
+    LXe_mpt->AddProperty("SCINTILLATIONCOMPONENT2", sc_energy, intensity);
+
+    LXe_mpt->AddConstProperty("SCINTILLATIONYIELD", 58708./MeV);
+    LXe_mpt->AddConstProperty("RESOLUTIONSCALE", 1);
+    LXe_mpt->AddConstProperty("SCINTILLATIONTIMECONSTANT1", 2.*ns);
+    LXe_mpt->AddConstProperty("SCINTILLATIONTIMECONSTANT2", 43.5*ns);
+    LXe_mpt->AddConstProperty("SCINTILLATIONYIELD1", .03);
+    LXe_mpt->AddConstProperty("SCINTILLATIONYIELD2", .97);
+    LXe_mpt->AddConstProperty("ATTACHMENT", 1000.*ms, 1);
+
+    std::vector<G4double> abs_energy =
+      {opticalprops::optPhotMinE_, opticalprops::optPhotMaxE_};
+    std::vector<G4double> abs_length =
+      {opticalprops::noAbsLength_, opticalprops::noAbsLength_};
+
+    LXe_mpt->AddProperty("ABSLENGTH", abs_energy, abs_length);
+
+    std::vector<G4double> rayleigh_energy =
+      {opticalprops::optPhotMinE_, opticalprops::optPhotMaxE_};
+    std::vector<G4double> rayleigh_length = {36.*cm, 36.*cm};
+
+    LXe_mpt->AddProperty("RAYLEIGH", rayleigh_energy, rayleigh_length);
+
+    return LXe_mpt;
+  }
+
 
 
 G4MaterialPropertiesTable* LXe_nconst()
