@@ -28,6 +28,7 @@ namespace petopticalprops
 
   G4MaterialPropertiesTable* FakeGenericMaterial(G4double quartz_rindex = 1.6);
 
+  G4MaterialPropertiesTable* LXe();
   G4MaterialPropertiesTable* LXe_nconst();
 
   G4MaterialPropertiesTable* Pyrex_vidrasa();

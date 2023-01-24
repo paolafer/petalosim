@@ -290,7 +290,7 @@ void FullRingInfinity::BuildCryostat()
       new G4Tubs("LXE", lxe_int_radius, lxe_ext_radius,
                  lxe_width/2., 0, twopi);
     LXe_ = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
-    LXe_->SetMaterialPropertiesTable(opticalprops::LXe());
+    LXe_->SetMaterialPropertiesTable(petopticalprops::LXe());
     LXe_logic_ =
       new G4LogicalVolume(LXe_solid, LXe_, "LXE");
     new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), LXe_logic_,
