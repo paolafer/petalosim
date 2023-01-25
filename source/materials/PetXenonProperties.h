@@ -12,9 +12,9 @@
 #include <globals.hh>
 #include <vector>
 
-std::pair<G4int, G4int> MakeLXeDensityDataTable(std::vector<std::vector<G4double>>& data);
+G4int MakeLXeDensityDataTable(std::vector<std::vector<G4double>>& data);
 
-G4double GetLXeDensity(G4double temperature, G4double pressure);
+G4double GetLXeDensity(G4double pressure);
 
 
 #endif
