@@ -161,7 +161,7 @@ G4MaterialPropertiesTable* GlassEpoxy()
 }
 
 
-  G4MaterialPropertiesTable* LXe(G4double temperature, G4double pressure)
+  G4MaterialPropertiesTable* LXe(G4double pressure)
   {
     /// The time constants are taken from E. Hogenbirk et al 2018 JINST 13 P10031
     G4MaterialPropertiesTable* LXe_mpt = new G4MaterialPropertiesTable();
@@ -175,8 +175,7 @@ G4MaterialPropertiesTable* GlassEpoxy()
       ri_energy.push_back(opticalprops::optPhotMinE_ + i * eWidth);
     }
 
-    G4double density = GetLXeDensity(temperature/kelvin, pressure/bar);
-    G4cout << "LXe density = " << density/g*cm3 << G4endl;
+    G4double density = GetLXeDensity(pressure);
 
     std::vector<G4double> ri_index;
     for (G4int i=0; i<ri_entries; i++) {

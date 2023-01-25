@@ -93,7 +93,7 @@ private:
 
   G4double max_step_size_;
 
-  G4double temp_, pressure_;
+  G4double pressure_;
 
   /// Messenger for the definition of control commands
   G4GenericMessenger* msg_;

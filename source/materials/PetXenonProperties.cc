@@ -39,10 +39,7 @@
   // Read lines in file
   G4String thisline;
   getline(inFile, thisline); // don't use first line
-  G4int npressures = 0;
-  G4int ntemps = 0;
   G4int count = 0;
-  G4double thistemp = 0;
   G4double temp, press, dens;
   char comma;
 
@@ -65,7 +62,7 @@ G4double GetLXeDensity(G4double pressure)
   // saturation curve of liquid xenon.
   G4double density = 5.324 * kg/m3;
   std::vector<std::vector<G4double>> data;
-  G4int nkeys = MakeLXeDensityDataTable(data);
+  G4int n_keys = MakeLXeDensityDataTable(data);
 
   // Use linear interpolation
   G4bool found = false;
