@@ -8,8 +8,6 @@
 
 #include "PetXenonProperties.h"
 
-#include "nexus/Interpolation.h"
-
 #include <G4SystemOfUnits.hh>
 #include <fstream>
 
