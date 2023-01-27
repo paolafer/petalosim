@@ -106,17 +106,18 @@ void HDF5Writer::WriteSensorDataInfo(int evt_number, unsigned int sensor_id, uns
   ismp_++;
 }
 
-void HDF5Writer::WriteSensorTofInfo(int evt_number, int sensor_id, unsigned int time_bin, unsigned int charge)
+void HDF5Writer::WriteSensorTofInfo(int evt_number, int sensor_id, float time, unsigned int track_id)
 {
   sns_tof_t snsTof;
   snsTof.event_id = evt_number;
   snsTof.sensor_id = sensor_id;
-  snsTof.time_bin = time_bin;
-  snsTof.charge = charge;
+  snsTof.time = time;
+  snsTof.track_id = track_id;
   writeSnsTof(&snsTof, snsTofTable_, memtypeSnsTof_, ismp_tof_);
 
   ismp_tof_++;
 }
+
 
 void HDF5Writer::WriteHitInfo(int evt_number, int particle_indx, float hit_position_x, float hit_position_y, float hit_position_z, float hit_time, float hit_energy, const char* label)
 {

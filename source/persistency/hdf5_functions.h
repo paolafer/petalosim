@@ -29,8 +29,8 @@
   typedef struct{
     int32_t event_id;
     int sensor_id;
-    unsigned int time_bin;
-    unsigned int charge;
+    float time;
+    unsigned int track_id;
   } sns_tof_t;
 
   typedef struct{

@@ -36,8 +36,8 @@ hsize_t createSensorTofType()
   hsize_t memtype = H5Tcreate (H5T_COMPOUND, sizeof (sns_tof_t));
   H5Tinsert (memtype, "event_id", HOFFSET (sns_tof_t, event_id), H5T_NATIVE_INT32);
   H5Tinsert (memtype, "sensor_id" , HOFFSET (sns_tof_t, sensor_id) , H5T_NATIVE_INT);
-  H5Tinsert (memtype, "time_bin" , HOFFSET (sns_tof_t, time_bin) , H5T_NATIVE_UINT);
-  H5Tinsert (memtype, "charge" , HOFFSET (sns_tof_t, charge) , H5T_NATIVE_UINT);
+  H5Tinsert (memtype, "time" , HOFFSET (sns_tof_t, time) , H5T_NATIVE_FLOAT);
+  H5Tinsert (memtype, "track_id" , HOFFSET (sns_tof_t, track_id) , H5T_NATIVE_UINT);
   return memtype;
 }
 
