@@ -9,12 +9,12 @@
 
 #include "PetaloPersistencyManager.h"
 #include "HDF5Writer.h"
+#include "ToFSD.h"
 #include "ChargeSD.h"
 
 #include "nexus/Trajectory.h"
 #include "nexus/TrajectoryMap.h"
 #include "nexus/IonizationSD.h"
-#include "nexus/SensorSD.h"
 #include "nexus/NexusApp.h"
 #include "nexus/DetectorConstruction.h"
 #include "nexus/SaveAllSteppingAction.h"
@@ -233,7 +233,6 @@ void PetaloPersistencyManager::StoreHits(G4HCofThisEvent* hce)
     G4String hcname = hct->GetHCname(i);
     G4String sdname = hct->GetSDname(i);
     int hcid = sdmgr->GetCollectionID(sdname+"/"+hcname);
-
     // Fetch collection using the id number
     G4VHitsCollection* hits = hce->GetHC(hcid);
 
@@ -242,7 +241,7 @@ void PetaloPersistencyManager::StoreHits(G4HCofThisEvent* hce)
 	StoreIonizationHits(hits);
       }
     }
-    else if (hcname == SensorSD::GetCollectionUniqueName())
+    else if (hcname == ToFSD::GetCollectionUniqueName())
       StoreSensorHits(hits);
     else if (hcname == ChargeSD::GetCollectionUniqueName())
       StoreChargeHits(hits);
@@ -285,18 +284,18 @@ void PetaloPersistencyManager::StoreIonizationHits(G4VHitsCollection* hc)
 
 void PetaloPersistencyManager::StoreSensorHits(G4VHitsCollection* hc)
 {
-  std::map<G4int, SensorHit*> mapOfHits;
+  std::map<G4int, PetSensorHit*> mapOfHits;
 
-  SensorHitsCollection* hits = dynamic_cast<SensorHitsCollection*>(hc);
+  PetSensorHitsCollection* hits = dynamic_cast<PetSensorHitsCollection*>(hc);
   if (!hits) return;
 
   std::vector<G4int > sensor_ids;
   for (size_t i=0; i<hits->entries(); i++) {
 
-    SensorHit* hit = dynamic_cast<SensorHit*>(hits->GetHit(i));
+    PetSensorHit* hit = dynamic_cast<PetSensorHit*>(hits->GetHit(i));
     if (!hit) continue;
 
-    int s_id  = hit->GetPmtID();
+    int s_id  = hit->GetSnsID();
     mapOfHits[s_id] = hit;
 
     const std::map<G4double, G4int>& wvfm = hit->GetHistogram();
@@ -306,22 +305,18 @@ void PetaloPersistencyManager::StoreSensorHits(G4VHitsCollection* hc)
     for (it = wvfm.begin(); it != wvfm.end(); ++it) {
       amplitude = amplitude + (*it).second;
     }
-    if (hit->GetPmtID() >= 0) {
-      G4int sens_id;
-      sens_id = hit->GetPmtID();
+    G4int sens_id;
+    sens_id = hit->GetSnsID();
 
-      if (amplitude > thr_charge_){
-        sensor_ids.push_back(sens_id);
-      }
-    } else if (hit->GetPmtID()<0) {
-      tof_bin_size_ = hit->GetBinSize();
+    if (amplitude > thr_charge_){
+      sensor_ids.push_back(sens_id);
     }
   }
 
   for (G4int s_id: sensor_ids){
     std::string sdname = hits->GetSDname();
 
-    SensorHit* hit = mapOfHits[s_id];
+    PetSensorHit* hit = mapOfHits[s_id];
     G4ThreeVector xyz = hit->GetPosition();
 
     const std::map<G4double, G4int>& wvfm = hit->GetHistogram();
@@ -332,35 +327,28 @@ void PetaloPersistencyManager::StoreSensorHits(G4VHitsCollection* hc)
       for (it = wvfm.begin(); it != wvfm.end(); ++it) {
         charge = charge + (*it).second;
       }
-        h5writer_->WriteSensorDataInfo(nevt_, (unsigned int)hit->GetPmtID(), charge);
+        h5writer_->WriteSensorDataInfo(nevt_, (unsigned int)hit->GetSnsID(), charge);
     }
 
-    if (hit->GetPmtID() >= 0) {
+    if (hit->GetSnsID() >= 0) {
       std::vector<G4int>::iterator pos_it =
-	std::find(sns_posvec_.begin(), sns_posvec_.end(), hit->GetPmtID());
+	std::find(sns_posvec_.begin(), sns_posvec_.end(), hit->GetSnsID());
       if (pos_it == sns_posvec_.end()) {
-	h5writer_->WriteSensorPosInfo((unsigned int)hit->GetPmtID(), sdname.c_str(),
+	h5writer_->WriteSensorPosInfo((unsigned int)hit->GetSnsID(), sdname.c_str(),
                                       (float)xyz.x(), (float)xyz.y(), (float)xyz.z());
-	sns_posvec_.push_back(hit->GetPmtID());
+	sns_posvec_.push_back(hit->GetSnsID());
       }
-    }
 
+      // Save also individual photons
+      const std::map<G4double, G4int>& phot = hit->GetPhotonMap();
 
-    // TOF
-    SensorHit* hitTof = mapOfHits[-s_id];
-    const std::map<G4double, G4int>& wvfmTof = hitTof->GetHistogram();
-
-    double binsize_tof = hitTof->GetBinSize();
-
-    for (it = wvfmTof.begin(); it != wvfmTof.end(); ++it) {
-
-      if (((*it).first) <= tof_time_){
-        unsigned int time_bin_tof = (unsigned int)((*it).first/binsize_tof+0.5);
-        unsigned int charge_tof = (unsigned int)((*it).second+0.5);
-        h5writer_->WriteSensorTofInfo(nevt_, hitTof->GetPmtID(), time_bin_tof, charge_tof);
-      }
-      else {
-        break;
+      for (it = phot.begin(); it != phot.end(); ++it) {
+        if (it->first <= tof_time_){
+          h5writer_->WriteSensorTofInfo(nevt_, hit->GetSnsID(), it->first, it->second);
+        }
+        else {
+          break;
+        }
       }
     }
 
@@ -391,6 +379,8 @@ void PetaloPersistencyManager::StoreSensorHits(G4VHitsCollection* hc)
     */
   }
 }
+
+
 
 
 void PetaloPersistencyManager::StoreChargeHits(G4VHitsCollection* hc)

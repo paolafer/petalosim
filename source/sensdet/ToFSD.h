@@ -13,8 +13,8 @@
 #ifndef TOF_SD_H
 #define TOF_SD_H
 
+#include "PetSensorHit.h"
 #include <G4VSensitiveDetector.hh>
-#include "nexus/SensorHit.h"
 
 class G4Step;
 class G4HCofThisEvent;
@@ -86,7 +86,7 @@ private:
 
   G4int box_geom_; ///< Boolean required to change the naming_order_ for the case of the BoxSetup
 
-  SensorHitsCollection *HC_; ///< Pointer to the collection of hits
+  PetSensorHitsCollection *HC_; ///< Pointer to the collection of hits
 };
 
 // INLINE METHODS //////////////////////////////////////////////////
