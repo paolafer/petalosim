@@ -16,6 +16,7 @@
 #include <PetaloDetector.hh>
 #include <PetitDetector.hh>
 
+#include <G4Cerenkov.hh>
 #include <G4Scintillation.hh>
 #include <G4GenericMessenger.hh>
 #include <G4OpticalPhoton.hh>
@@ -32,13 +33,16 @@
 /// with the generic physics list
 G4_DECLARE_PHYSCONSTR_FACTORY(PetaloPhysics);
 
-PetaloPhysics::PetaloPhysics() : G4VPhysicsConstructor("PetaloPhysics"),
+PetaloPhysics::PetaloPhysics() : G4VPhysicsConstructor("PetaloPhysics"), max_beta_(0.1),
                                  risetime_(false), noCompt_(false),
                                  nest_(false), prod_th_el_(false),
                                  petalo_detector_("FullRing")
 {
   msg_ = new G4GenericMessenger(this, "/PhysicsList/Petalo/",
                                 "Control commands of the nexus physics list.");
+
+  msg_->DeclareProperty("max_beta_change", max_beta_,
+                        "Maximum relative change of the beta value per step.");
 
   msg_->DeclareProperty("scintRiseTime", risetime_,
                         "Must be true if LYSO is used");
@@ -93,6 +97,14 @@ void PetaloPhysics::ConstructProcess()
   pos_annihil_ = new PositronAnnihilation();
   pmanager->AddDiscreteProcess(pos_annihil_);
   pmanager->SetProcessOrderingToFirst(pos_annihil_, idxAtRest);
+
+  // Play with Cerenkov parameters
+  pmanager = G4Electron::Definition()->GetProcessManager();
+  G4Cerenkov* theCerProcess =
+        (G4Cerenkov*)G4ProcessTable::GetProcessTable()->FindProcess("Cerenkov",
+                                                                    G4Electron::Definition());
+  theCerProcess->SetMaxBetaChangePerStep(max_beta_);
+  G4cout << "Max beta change for step = " << theCerProcess->GetMaxBetaChangePerStep() / CLHEP::perCent << " %" << G4endl;
 
   // Add rise time to scintillation
   if (risetime_)

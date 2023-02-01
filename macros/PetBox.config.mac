@@ -22,6 +22,8 @@
 
 /Actions/PetSensorsEventAction/min_charge 50
 
+/PhysicsList/Petalo/max_beta_change 0.04
+
 ### PHYSICS
 #/process/optical/processActivation Scintillation true
 #/process/optical/processActivation Cerenkov      true

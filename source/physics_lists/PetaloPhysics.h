@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // petalosim | PetaloPhysics.h
 //
-// This class registers any new physics process defined in nexus.
+// This class registers any new physics process defined in petalosim.
 //
 // The PETALO Collaboration
 // ----------------------------------------------------------------------------
@@ -32,6 +32,8 @@ public:
   VDetector *petalo_;
 
 private:
+  G4double max_beta_; ///< Max change for beta in Cerenkov
+
   G4bool risetime_; ///< Rise time for LYSO
 
   G4bool noCompt_; ///< Switch on/off Compton scattering
