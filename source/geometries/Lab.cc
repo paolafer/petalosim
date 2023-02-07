@@ -23,8 +23,6 @@
 #include <G4NistManager.hh>
 #include <G4VisAttributes.hh>
 
-#include <TTree.h>
-
 using namespace nexus;
 
 using namespace CLHEP;

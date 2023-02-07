@@ -18,9 +18,6 @@
 class G4ParticleChange;
 class G4VWLSTimeGeneratorProfile;
 
-//class TH1F;
-//class TFile;
-
 class WavelengthShifting : public G4VDiscreteProcess
 {
 public:
@@ -41,9 +38,6 @@ private:
   G4ParticleChange *ParticleChange_;
   G4PhysicsTable *wlsIntegralTable_;
   G4VWLSTimeGeneratorProfile *WLSTimeGeneratorProfile_;
-
-  //TH1F* hWLSTime;
-  //TFile* histo_file;
 };
 
 #endif

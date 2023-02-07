@@ -1,8 +1,8 @@
 // ----------------------------------------------------------------------------
 // petalosim | PetAnalysisEventAction.h
 //
-// This class is based on DefaultEventAction and modified to produce
-// a histogram of the number of scintillation photons event by event.
+// This class is based on PetaloEventAction and modified to produce
+// a csv file with the number of scintillation photons event by event.
 //
 // The PETALO Collaboration
 // ----------------------------------------------------------------------------
@@ -15,8 +15,6 @@
 
 class G4Event;
 class G4GenericMessenger;
-class TH1F;
-class TFile;
 
 class PetAnalysisEventAction : public G4UserEventAction
 {
@@ -32,16 +30,11 @@ public:
   void EndOfEventAction(const G4Event *);
 
 private:
-  G4GenericMessenger *msg_;
+  G4GenericMessenger* msg_;
   G4int nevt_, nupdate_;
   G4double min_energy_;
   G4double max_energy_;
-  G4String file_name_;
-  G4int file_no_;
 
-  TH1F *hNPhotons;
-
-  TFile *Histo;
 };
 
 #endif

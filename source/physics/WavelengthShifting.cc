@@ -15,9 +15,6 @@
 #include <Randomize.hh>
 #include <G4WLSTimeGeneratorProfileExponential.hh>
 
-#include <TH1F.h>
-#include <TFile.h>
-
 using namespace CLHEP;
 
 WavelengthShifting::WavelengthShifting(const G4String &name, G4ProcessType type) : G4VDiscreteProcess(name, type), wlsIntegralTable_(0)
@@ -29,9 +26,6 @@ WavelengthShifting::WavelengthShifting(const G4String &name, G4ProcessType type)
       new G4WLSTimeGeneratorProfileExponential("WLSTimeGeneratorProfileExponential");
 
   BuildThePhysicsTable();
-
-  // hWLSTime = new TH1F("WLSTime", "WLS photon production time", 50000, 0., 50000);
-  // hWLSTime->GetXaxis()->SetTitle("time (ps)");
 }
 
 WavelengthShifting::~WavelengthShifting()
@@ -43,10 +37,6 @@ WavelengthShifting::~WavelengthShifting()
     delete wlsIntegralTable_;
   }
   delete WLSTimeGeneratorProfile_;
-
-  // histo_file = new TFile("HistoFile.root","recreate");
-  // hWLSTime->Write();
-  // histo_file->Close();
 }
 
 G4bool WavelengthShifting::IsApplicable(const G4ParticleDefinition &aParticleType)
@@ -148,8 +138,6 @@ G4VParticleChange *WavelengthShifting::PostStepDoIt(const G4Track &track, const 
   aSecondaryTrack->SetTouchableHandle(track.GetTouchableHandle());
   aSecondaryTrack->SetParentID(track.GetTrackID());
   ParticleChange_->AddSecondary(aSecondaryTrack);
-
-  //hWLSTime->Fill(TimeDelay/picosecond);
 
   return G4VDiscreteProcess::PostStepDoIt(track, step);
 }

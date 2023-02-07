@@ -5,11 +5,12 @@
 source/.DS_Store
 *~
 
-# nexus output files
+# petalosim output files
 *.h5
 *.root
+*.csv
 
-# nexus auxiliary files
+# petalosim auxiliary files
 *.dat
 *.pet
 *.macro
@@ -19,8 +20,8 @@ bin
 build
 buildvars.scons
 cmake
-nexus
-nexus-test
+petalo
+petalo-test
 *.o
 
 # test caches

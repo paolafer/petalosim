@@ -1,8 +1,8 @@
 // ----------------------------------------------------------------------------
 // petalosim | PetAnalysisEventAction.cc
 //
-// This class is based on DefaultEventAction and modified to produce
-// a histogram of the number of scintillation photons event by event.
+// This class is based on PetaloEventAction and modified to produce
+// a csv file with the number of scintillation photons event by event.
 //
 // The PETALO Collaboration
 // ----------------------------------------------------------------------------
@@ -22,9 +22,8 @@
 #include <G4HCtable.hh>
 #include <globals.hh>
 #include <G4OpticalPhoton.hh>
+#include <G4AnalysisManager.hh>
 
-#include "TH1F.h"
-#include "TFile.h"
 
 namespace nexus {}
 using namespace nexus;
@@ -34,9 +33,7 @@ REGISTER_CLASS(PetAnalysisEventAction, G4UserEventAction)
 PetAnalysisEventAction::PetAnalysisEventAction() : G4UserEventAction(),
                                                    nevt_(0), nupdate_(10),
                                                    min_energy_(0.),
-                                                   max_energy_(DBL_MAX),
-                                                   file_name_("OpticalEvent"),
-                                                   file_no_(0)
+                                                   max_energy_(DBL_MAX)
 {
   msg_ = new G4GenericMessenger(this, "/Actions/PetAnalysisEventAction/");
 
@@ -53,22 +50,10 @@ PetAnalysisEventAction::PetAnalysisEventAction() : G4UserEventAction(),
   max_energy_cmd.SetParameterName("max_energy", true);
   max_energy_cmd.SetUnitCategory("Energy");
   max_energy_cmd.SetRange("max_energy>0.");
-
-  msg_->DeclareProperty("file_name", file_name_, "");
-  msg_->DeclareProperty("file_number", file_no_, "");
-
-  hNPhotons = new TH1F("NPhotons", "NPhotons", 5000, 0, 70000.);
-  hNPhotons->GetXaxis()->SetTitle("Number of optical photons");
 }
 
 PetAnalysisEventAction::~PetAnalysisEventAction()
 {
-  std::ostringstream file_number;
-  file_number << file_no_;
-  G4String filename = file_name_ + "." + file_number.str() + ".root";
-  Histo = new TFile(filename, "recreate");
-  hNPhotons->Write();
-  Histo->Close();
 }
 
 void PetAnalysisEventAction::BeginOfEventAction(const G4Event * /*event*/)
@@ -128,7 +113,11 @@ void PetAnalysisEventAction::EndOfEventAction(const G4Event *event)
     if (!event->IsAborted() && edep > min_energy_ && edep < max_energy_)
     {
       pm->StoreCurrentEvent(true);
-      hNPhotons->Fill(n_opt_photons);
+
+      auto analysisManager = G4AnalysisManager::Instance();
+
+      analysisManager->FillNtupleDColumn(0, 0, n_opt_photons);
+      analysisManager->AddNtupleRow(0);
     }
     else
     {

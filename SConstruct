@@ -91,11 +91,6 @@ vars.AddVariables(
                  'Path to Geant4 bin directory.',  # var description
                  NULL_PATH),                      # var default value
 
-    ## ROOT
-
-    PathVariable('ROOT_BINDIR',
-                 'Path to ROOT bin directory.',
-                 NULL_PATH),
 
     ## HDF5
 
@@ -184,20 +179,6 @@ if not env['LIBPATH']:
 
     if not conf.CheckLib(library='G4global', language='CXX', autoadd=0):
         Abort('Geant4 libraries could not be found.')
-
-
-    ## ROOT configuration ----------------------------------
-
-    if env['ROOT_BINDIR'] != NULL_PATH:
-        env.PrependENVPath('PATH', env['ROOT_BINDIR'])
-
-    env.ParseConfig('root-config --cflags --libs')
-
-    if not conf.CheckCXXHeader('TObject.h'):
-        Abort('ROOT headers could not be found.')
-
-    if not conf.CheckLib(library='Core', language='CXX', autoadd=0):
-        Abort('ROOT libraries could not be found.')
 
 
     ## HDF5 configuration ----------------------------------
