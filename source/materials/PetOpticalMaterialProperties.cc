@@ -246,7 +246,7 @@ G4MaterialPropertiesTable* PTFE()
 
   // REFLECTIVITY IN LXE (from https://link.springer.com/content/pdf/10.1140/epjc/s10052-020-7800-6.pdf)
   std::vector<G4double> ENERGIES = {opticalprops::optPhotMinE_, opticalprops::optPhotMaxE_};
-  std::vector<G4double> REFLECTIVITY = {0.999, 0.999};
+  std::vector<G4double> REFLECTIVITY = {0.98, 0.98};
   mpt->AddProperty("REFLECTIVITY", ENERGIES, REFLECTIVITY);
 
   // REFLEXION BEHAVIOR
