@@ -20,6 +20,7 @@
 #include "nexus/MaterialsList.h"
 #include "nexus/OpticalMaterialProperties.h"
 #include "nexus/SpherePointSampler.h"
+#include "nexus/BoxPointSampler.h"
 
 #include <G4GenericMessenger.hh>
 #include <G4LogicalVolume.hh>
@@ -34,6 +35,9 @@
 #include <G4OpticalSurface.hh>
 #include <G4LogicalSkinSurface.hh>
 #include <G4SubtractionSolid.hh>
+#include <Randomize.hh>
+
+#include <random>
 
 using namespace nexus;
 
@@ -82,6 +86,7 @@ PetBox::PetBox() : GeometryBase(),
                    wls_depth_(0.001 * mm),
                    add_teflon_block_(0),
                    max_step_size_(1. * mm),
+                   hole_depth_(5 * mm),
                    pressure_(1 * bar)
 
 {
@@ -108,14 +113,19 @@ PetBox::PetBox() : GeometryBase(),
   msg_->DeclareProperty("add_teflon_block", add_teflon_block_,
     "Boolean to add a teflon block that reduces the xenon volume");
 
+  G4GenericMessenger::Command &hole_depth_cmd =
+    msg_->DeclareProperty("hole_depth", hole_depth_,
+                          "Depth of holes in teflon");
+  hole_depth_cmd.SetUnitCategory("Length");
+  hole_depth_cmd.SetParameterName("hole_depth", false);
+  hole_depth_cmd.SetRange("hole_depth>0.");
+
   G4GenericMessenger::Command &press_cmd =
     msg_->DeclareProperty("pressure", pressure_,
                           "Pressure of LXe");
   press_cmd.SetUnitCategory("Pressure");
   press_cmd.SetParameterName("pressure", false);
   press_cmd.SetRange("pressure>0.");
-
-
 }
 
 PetBox::~PetBox()
@@ -132,7 +142,6 @@ void PetBox::Construct()
   lab_logic_ = new G4LogicalVolume(lab_solid, air, "LAB");
   lab_logic_->SetVisAttributes(G4VisAttributes::GetInvisible());
   this->SetLogicalVolume(lab_logic_);
-
   BuildBox();
   BuildSensors();
 }
@@ -513,7 +522,7 @@ void PetBox::BuildBox()
     G4double teflon_central_offset_y = 3.11 * mm;
 
     G4double teflon_holes_xy    = 5.75 * mm;
-    G4double teflon_holes_depth = 5    * mm;
+    G4double teflon_holes_depth = hole_depth_;//5    * mm;
 
     G4double dist_between_holes_xy = 1.75 * mm;
 
@@ -542,7 +551,6 @@ void PetBox::BuildBox()
     teflon_hole_logic->SetUserLimits(new G4UserLimits(max_step_size_));
 
     G4double holes_pos_z = -teflon_block_thick/2. + teflon_holes_depth/2.;
-
     G4int copy_no = 0;
 
     for (G4int j = 0; j < 2; j++){ // Loop over the tiles in row
@@ -558,7 +566,8 @@ void PetBox::BuildBox()
             G4double holes_pos_x = set_holes_x - 3*(teflon_holes_xy/2. + dist_between_holes_xy/2.)
                                     + k*(teflon_holes_xy + dist_between_holes_xy);
 
-            new G4PVPlacement(0, G4ThreeVector(holes_pos_x, holes_pos_y, holes_pos_z), teflon_hole_logic,
+            hole_positions_.push_back(G4ThreeVector(holes_pos_x, holes_pos_y, holes_pos_z));
+            new G4PVPlacement(0, hole_positions_[copy_no], teflon_hole_logic,
                               "ACTIVE", teflon_block_logic, false, copy_no, false);
             copy_no += 1;
           }
@@ -588,6 +597,15 @@ void PetBox::BuildBox()
       G4VisAttributes block_col = nexus::LightBlue();
       teflon_block_logic->SetVisAttributes(block_col);
     }
+
+    // Vertex generator in xenon holes
+    vtx_dim_z_ = teflon_holes_depth + 0.55 * mm;
+
+    teflon_hole_gen_ = new BoxPointSampler(teflon_holes_xy, teflon_holes_xy, vtx_dim_z_, 0,
+                                           G4ThreeVector(0, 0, 0), 0);
+
+    // This is the z coordinate for the negative z plane
+    vtx_z_displ_ = -block_z_pos + holes_pos_z - 0.55 * mm/2.; // add the separation between teflon and tile
   }
 
 
@@ -728,6 +746,46 @@ G4ThreeVector PetBox::GenerateVertex(const G4String &region) const
   else if (region == "SOURCE")
     {
       vertex = source_gen_->GenerateVertex("VOLUME");
+    }
+  else if (region == "HOLES_UNIFORM")
+    {
+      vertex = teflon_hole_gen_->GenerateVertex("INSIDE");
+      G4double rand = 64 * G4UniformRand();
+
+      G4ThreeVector hole_pos = hole_positions_[int(rand)];
+
+      G4double z_displ;
+      rand = G4UniformRand();
+      if (rand > 0.5) {
+        z_displ = vtx_z_displ_;
+      } else {
+        z_displ = -vtx_z_displ_;
+      }
+      G4ThreeVector displ(hole_pos[0], hole_pos[1], z_displ);
+      vertex = vertex + displ;
+    }
+  else if (region == "HOLES_EXP")
+    {
+      G4ThreeVector base_vertex = teflon_hole_gen_->GenerateVertex("INSIDE");
+      G4double rand = 64 * G4UniformRand();
+
+      G4ThreeVector hole_pos = hole_positions_[int(rand)];
+
+      G4double att_length = 37 * mm;
+      G4double lambda     = 1 / att_length;
+      G4double z_exp      = 1000;
+      while(z_exp > vtx_dim_z_) {
+        z_exp = - log(G4UniformRand()) / lambda;
+      }
+      G4double z_vtx;
+      rand = G4UniformRand();
+      if (rand > 0.5) {
+        z_vtx = vtx_z_displ_ + vtx_dim_z_/2. - z_exp;
+      } else {
+        z_vtx = -vtx_z_displ_ - vtx_dim_z_/2. + z_exp;
+        //z_vtx = vtx_z_displ_ + vtx_dim_z_/2. - z_exp;
+      }
+      vertex = G4ThreeVector (base_vertex[0]+hole_pos[0], base_vertex[1]+hole_pos[1], z_vtx);
     }
   else
     {

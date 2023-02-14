@@ -12,6 +12,9 @@
 #include "nexus/GeometryBase.h"
 #include "TileGeometryBase.h"
 
+#include <vector>
+#include <random>
+
 class G4GenericMessenger;
 class G4LogicalVolume;
 class G4VPhysicalVolume;
@@ -22,7 +25,9 @@ class TileFBK;
 
 namespace nexus
 {
-class SpherePointSampler;
+  class SpherePointSampler;
+  class BoxPointSampler;
+
 }
 
 using namespace nexus;
@@ -92,12 +97,19 @@ private:
 
   G4double max_step_size_;
 
+  G4double hole_depth_;
+
   G4double pressure_;
 
   /// Messenger for the definition of control commands
   G4GenericMessenger* msg_;
 
+  // Vertex generators
   SpherePointSampler* source_gen_;
+  BoxPointSampler* teflon_hole_gen_;
+
+  std::vector<G4ThreeVector> hole_positions_;
+  G4double vtx_dim_z_, vtx_z_displ_;
 };
 
 #endif
