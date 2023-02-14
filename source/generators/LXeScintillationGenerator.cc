@@ -26,6 +26,7 @@
 #include <G4RandomDirection.hh>
 #include <G4MaterialPropertiesTable.hh>
 #include <Randomize.hh>
+#include <G4Poisson.hh>
 
 #include "CLHEP/Units/SystemOfUnits.h"
 
@@ -81,7 +82,9 @@ void LXeScintillationGenerator::GeneratePrimaryVertex(G4Event* event)
   // Create a new vertex
   G4PrimaryVertex* vertex = new G4PrimaryVertex(position, time);
 
-  for ( G4int i = 0; i<nphotons_; i++)
+  G4int smeared_nphotons = G4Poisson(nphotons_);
+
+  for ( G4int i = 0; i<smeared_nphotons; i++)
     {
       // Generate random direction by default
       G4ThreeVector momentum_direction_ = G4RandomDirection();
