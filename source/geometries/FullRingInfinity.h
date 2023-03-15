@@ -65,6 +65,7 @@ private:
   G4double sipm_pitch_;
   G4int n_sipm_rows_;
   G4int instr_faces_; ///< number of instrumented faces
+  G4bool teflon_;
   G4bool charge_det_;
   G4bool separators_;
   G4double wire_pitch_;

@@ -47,6 +47,7 @@ FullRingInfinity::FullRingInfinity() :
   sipm_pitch_(4. * mm),
   n_sipm_rows_(16),
   instr_faces_(2),
+  teflon_(false),
   charge_det_(false),
   separators_(false),
   wire_pitch_(4. * mm),
@@ -104,6 +105,7 @@ FullRingInfinity::FullRingInfinity() :
 
   msg_->DeclareProperty("sipm_rows", n_sipm_rows_, "Number of SiPM rows");
   msg_->DeclareProperty("instrumented_faces", instr_faces_, "Number of instrumented faces");
+  msg_->DeclareProperty("teflon", teflon_, "True if teflon blocks are placed inside LXe");
   msg_->DeclareProperty("charge_detector", charge_det_, "True if charge is detected");
   msg_->DeclareProperty("separators", separators_, "True if separator panels are present");
   msg_->DeclareProperty("phantom", phantom_, "True if Jaszczak phantom is used");
@@ -289,6 +291,7 @@ void FullRingInfinity::BuildCryostat()
     G4Tubs* LXe_solid =
       new G4Tubs("LXE", lxe_int_radius, lxe_ext_radius,
                  lxe_width/2., 0, twopi);
+    G4cout << "LXe thickness = " << lxe_ext_radius - lxe_int_radius << G4endl;
     LXe_ = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
     LXe_->SetMaterialPropertiesTable(opticalprops::LXe());
     LXe_logic_ =
@@ -296,15 +299,37 @@ void FullRingInfinity::BuildCryostat()
     new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), LXe_logic_,
 		      "LXE", lxe_container_logic, false, 0, true);
 
-
     G4double wide_active_depth = lxe_depth_ + sipm_dim_.z() + offset_;
-    G4Tubs* active_solid =
-      new G4Tubs("ACTIVE", inner_radius_, inner_radius_ + wide_active_depth,
-                 axial_length_/2., 0, twopi);
-    active_logic_ =
-      new G4LogicalVolume(active_solid, LXe_, "ACTIVE");
-    new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), active_logic_,
-                      "ACTIVE", LXe_logic_, false, 0, true);
+
+    if (teflon_) {
+      G4Tubs* teflon_solid =
+        new G4Tubs("TEFLON_BLOCK", lxe_int_radius + 0.5*mm, lxe_ext_radius - 0.5*mm,
+                   (lxe_width - 1*mm)/2., 0, twopi);
+
+      G4Material* teflon_mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_TEFLON");
+      teflon_mat->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
+      G4LogicalVolume* teflon_logic =
+       new G4LogicalVolume(teflon_solid, teflon_mat, "TEFLON_BLOCK");
+
+      G4double teflon_hole_xy = 4*sipm_pitch_;
+      G4double teflon_hole_depth = 32*mm;
+      G4Box* teflon_hole_solid =
+        new G4Box("ACTIVE", teflon_hole_xy/2., teflon_hole_xy/2., teflon_hole_depth/2.);
+      
+      G4LogicalVolume* teflon_hole_logic =
+        new G4LogicalVolume(teflon_hole_solid, LXe_, "ACTIVE");
+      
+
+    } else {
+      G4Tubs* active_solid =
+        new G4Tubs("ACTIVE", inner_radius_, inner_radius_ + wide_active_depth,
+                   axial_length_/2., 0, twopi);
+      active_logic_ =
+        new G4LogicalVolume(active_solid, LXe_, "ACTIVE");
+      new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), active_logic_,
+                        "ACTIVE", LXe_logic_, false, 0, true);
+      
+    }
 
     // Set the ACTIVE volume as an ionization sensitive det
     IonizationSD* ionisd = new IonizationSD("/PETALO/ACTIVE");
@@ -472,6 +497,7 @@ void FullRingInfinity::BuildSensors()
     }
   }
 }
+
 
 void FullRingInfinity::BuildWires()
 {
