@@ -503,8 +503,8 @@ void PetBox::BuildBox()
 
     // TEFLON BLOCK TO REDUCE XENON VOL  /////////////////////////
 
-    G4double teflon_block_xy    = 67    * mm;
-    G4double teflon_block_thick = 35.75 * mm;
+    G4double teflon_block_xy    = 67 * mm;
+    G4double teflon_block_thick = 30 * mm;//35.75 * mm;
 
     G4double teflon_offset_x = 3.64 * mm;
     G4double teflon_offset_y = 3.7  * mm;
@@ -512,15 +512,15 @@ void PetBox::BuildBox()
     G4double teflon_central_offset_x = 3.23 * mm;
     G4double teflon_central_offset_y = 3.11 * mm;
 
-    G4double teflon_holes_xy    = 5.75 * mm;
-    G4double teflon_holes_depth = 5    * mm;
+    G4double teflon_holes_xy    =  5.75 * mm;
+    G4double teflon_holes_depth = 30    * mm;
 
     G4double dist_between_holes_xy = 1.75 * mm;
 
     G4Box *teflon_block_solid =
       new G4Box("TEFLON_BLOCK", teflon_block_xy/2., teflon_block_xy/2., teflon_block_thick/2.);
 
-    G4double block_z_pos = ih_z_size_/2. + teflon_block_thick/2.;
+    G4double block_z_pos = ih_z_size_/2. + 3*mm + tile_thickn_ + 0.5*mm + teflon_block_thick/2.; //+0.55*mm
 
     G4Material *teflon = G4NistManager::Instance()->FindOrBuildMaterial("G4_TEFLON");
     teflon->SetMaterialPropertiesTable(new G4MaterialPropertiesTable());
@@ -571,8 +571,8 @@ void PetBox::BuildBox()
 
     G4RotationMatrix rot_teflon;
     rot_teflon.rotateY(pi);
-      new G4PVPlacement(G4Transform3D(rot_teflon, G4ThreeVector(0., 0., block_z_pos)), teflon_block_logic,
-                        "TEFLON_BLOCK", active_logic_, false, 1, false);
+      new G4PVPlacement(G4Transform3D(rot_teflon, G4ThreeVector(0., 0., block_z_pos)),
+                        teflon_block_logic, "TEFLON_BLOCK", active_logic_, false, 1, false);
 
 
     // Optical surface for teflon
@@ -633,9 +633,11 @@ void PetBox::BuildSensors()
   G4LogicalVolume *tile_logic = tile_->GetLogicalVolume();
 
   G4String vol_name;
-  G4int copy_no = 0;
+  G4int copy_no       = 0;
+  G4int entry_copy_no = 8;
 
   G4double z_pos = -box_size_/2. + box_thickness_ + dist_dice_flange_ + tile_thickn_/2.;
+  G4double z_entry_pos = ih_z_size_/2 + 3.*mm + tile_thickn_/2;
   for (G4int j = 0; j < n_tile_rows_; j++)
   {
     G4double y_pos = full_col_size_/2. - tile_size_y/2. - j*tile_size_y;
@@ -647,6 +649,9 @@ void PetBox::BuildSensors()
       new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, z_pos), tile_logic,
                         vol_name, active_logic_, false, copy_no, false);
       copy_no += 1;
+      new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, z_entry_pos), tile_logic,
+                        vol_name, active_logic_, false, entry_copy_no, false);
+      entry_copy_no += 1;
     }
   }
 
@@ -695,7 +700,7 @@ void PetBox::BuildSensors()
                         tile_logic, vol_name, active_logic_, false, copy_no, false);
     } else {
 
-      /// 4 TILES
+      /// 4 TILES DEFAULT CONFIGURATION
       for (G4int j=0; j<n_tile_rows_; j++) {
         G4double y_pos = full_col_size_/2. - tile_size_y/2. - j*tile_size_y;
         for (G4int i=0; i<n_tile_columns_; i++) {
@@ -705,6 +710,9 @@ void PetBox::BuildSensors()
           new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(x_pos, y_pos, -z_pos)),
                             tile_logic, vol_name, active_logic_, false, copy_no, false);
           copy_no += 1;
+          new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(x_pos, y_pos, -z_entry_pos)),
+                            tile_logic, vol_name, active_logic_, false, entry_copy_no, false);
+          entry_copy_no += 1;
         }
       }
     }
