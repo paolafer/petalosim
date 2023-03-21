@@ -13,6 +13,7 @@
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
 #include "Na22Source.h"
+#include "ChargeSD.h"
 
 #include "nexus/Visibilities.h"
 #include "nexus/IonizationSD.h"
@@ -158,7 +159,7 @@ void PetBox::BuildBox()
   G4Box *active_solid =
       new G4Box("LXe", LXe_size/2., LXe_size/2., LXe_size/2.);
 
-  G4Material *LXe = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
+  G4Material* LXe = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
   LXe->SetMaterialPropertiesTable(petopticalprops::LXe(pressure_));
   active_logic_ =
       new G4LogicalVolume(active_solid, LXe, "ACTIVE");
@@ -543,7 +544,10 @@ void PetBox::BuildBox()
 
     G4double holes_pos_z = -teflon_block_thick/2. + teflon_holes_depth/2.;
 
-    G4int copy_no = 0;
+
+    G4int copy_no       = 0;
+    G4bool wires_placed = false;
+    std::vector<G4double> wire_pos_x;
 
     for (G4int j = 0; j < 2; j++){ // Loop over the tiles in row
       G4double set_holes_y = teflon_block_xy/2. - teflon_offset_y - dist_four_holes/2.
@@ -551,6 +555,7 @@ void PetBox::BuildBox()
       for (G4int i = 0; i < 2; i++){ // Loop over the tiles in column
         G4double set_holes_x = -teflon_block_xy/2. + teflon_offset_x + dist_four_holes/2.
                                + i*(teflon_central_offset_x + dist_four_holes);
+        wires_placed  = false;
         for (G4int l = 0; l < 4; l++){ // Loop over the sensors in row
           G4double holes_pos_y = set_holes_y + 3*(teflon_holes_xy/2. + dist_between_holes_xy/2.)
                                 - l*(teflon_holes_xy + dist_between_holes_xy);
@@ -561,6 +566,11 @@ void PetBox::BuildBox()
             new G4PVPlacement(0, G4ThreeVector(holes_pos_x, holes_pos_y, holes_pos_z), teflon_hole_logic,
                               "ACTIVE", teflon_block_logic, false, copy_no, false);
             copy_no += 1;
+            if (!wires_placed) {
+              wire_pos_x.push_back(holes_pos_x);
+            }
+            if (k == 3) wires_placed = true;
+
           }
         }
       }
@@ -587,6 +597,54 @@ void PetBox::BuildBox()
     if (visibility_) {
       G4VisAttributes block_col = nexus::LightBlue();
       teflon_block_logic->SetVisAttributes(block_col);
+    }
+
+    // Add simple detector for charge
+    G4double wire_x = 7.5 * mm;
+    G4double wire_y = 62 * mm;
+    G4double wire_z = 1 * micrometer;
+    G4Box* chdet_solid = new G4Box("WIRE", wire_x/2.,
+                                   wire_y/2., wire_z/2);
+    G4LogicalVolume* chdet_logic =
+      new G4LogicalVolume(chdet_solid, LXe, "WIRE");
+
+    G4String sdname = "/WIRE/ChargeDet";
+    G4SDManager* sdmgr = G4SDManager::GetSDMpointer();
+    if (!sdmgr->FindSensitiveDetector(sdname, false))
+      {
+        ChargeSD* chargesd = new ChargeSD(sdname);
+        chargesd->SetTimeBinning(1.*microsecond);
+        G4SDManager::GetSDMpointer()->AddNewDetector(chargesd);
+        chdet_logic->SetSensitiveDetector(chargesd);
+      }
+
+    G4VisAttributes wire_col = nexus::Blue();
+    wire_col.SetForceSolid(true);
+    chdet_logic->SetVisAttributes(wire_col);
+
+    G4int chdet_copy_no = 0;
+    G4String chdet_vol_name = "WIRE_";
+    // We place the wire just when the teflon ends, in front of the tiles
+    G4double wire_pos_z = -block_z_pos - holes_pos_z - teflon_holes_depth/2. - wire_z /2;
+    G4ThreeVector chdet_position(0., 0., wire_pos_z);
+
+    for (G4int i=0; i<8; i++) {
+      chdet_position.setX(wire_pos_x[i]);
+      chdet_vol_name = "WIRE_" + std::to_string(chdet_copy_no);
+      new G4PVPlacement(0, chdet_position, chdet_logic,
+                        chdet_vol_name, active_logic_, false, chdet_copy_no, false);
+      chdet_copy_no+=1;
+    }
+
+    chdet_copy_no = 10;
+
+    for (G4int i=0; i<8; i++) {
+      chdet_position.setX(wire_pos_x[7-i]);
+      chdet_position.setZ(-wire_pos_z);
+      chdet_vol_name = "WIRE_" + std::to_string(chdet_copy_no);
+      new G4PVPlacement(0, chdet_position, chdet_logic,
+                        chdet_vol_name, active_logic_, false, chdet_copy_no, false);
+      chdet_copy_no+=1;
     }
   }
 
@@ -717,9 +775,9 @@ void PetBox::BuildSensors()
       }
     }
   }
-
-
 }
+
+
 
 G4ThreeVector PetBox::GenerateVertex(const G4String &region) const
 {
