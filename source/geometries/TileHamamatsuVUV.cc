@@ -9,7 +9,8 @@
 #include "TileHamamatsuVUV.h"
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
-#include "SiPMHamamatsuVUV.h"
+//#include "SiPMHamamatsuVUV.h"
+#include "SiPMCells.h"
 
 #include "nexus/Visibilities.h"
 #include "nexus/IonizationSD.h"
@@ -43,7 +44,7 @@ TileHamamatsuVUV::TileHamamatsuVUV() : TileGeometryBase(),
                                        quartz_thick_(0.6 * mm)
 
 {
-  sipm_ = new SiPMHamamatsuVUV();
+  sipm_ = new SiPMCells();
 }
 
 TileHamamatsuVUV::~TileHamamatsuVUV()
@@ -69,11 +70,11 @@ void TileHamamatsuVUV::Construct()
 
   new G4LogicalSkinSurface("FR4_OPSURF", tile_logic, fr4_opsurf);
 
-  sipm_->SetSensorDepth(1);
-  sipm_->SetMotherDepth(2);
-  sipm_->SetBoxGeom(GetBoxGeom());
+  //sipm_->SetSensorDepth(1);
+  //sipm_->SetMotherDepth(2);
+  //sipm_->SetBoxGeom(GetBoxGeom());
   // The SiPMs will have the same visibility as the tile
-  sipm_->SetVisibility(GetTileVisibility());
+  //sipm_->SetVisibility(GetTileVisibility());
 
   sipm_->Construct();
   G4ThreeVector sipm_dim = sipm_->GetDimensions();
