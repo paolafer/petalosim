@@ -298,6 +298,7 @@ void PetaloPersistencyManager::StoreSensorHits(G4VHitsCollection* hc)
     if (charge > thr_charge_){
       std::string sdname = hits->GetSDname();
       G4ThreeVector xyz = hit->GetPosition();
+
       if (save_tot_charge_ == true) {
         h5writer_->WriteSensorDataInfo(nevt_, (unsigned int)s_id, (unsigned int)charge);
       }
@@ -308,17 +309,18 @@ void PetaloPersistencyManager::StoreSensorHits(G4VHitsCollection* hc)
                                       (float)xyz.x(), (float)xyz.y(), (float)xyz.z());
         sns_posvec_.push_back(s_id);
       }
+
       // Save also individual photons
       const std::map<G4double, G4int>& phot = hit->GetPhotonMap();
       std::map<G4double, G4int>::const_iterator it;
       for (it = phot.begin(); it != phot.end(); ++it) {
-        if (it->first <= tof_time_){
-          h5writer_->WriteSensorTofInfo(nevt_, (unsigned int)s_id, (float)it->first,
-                                        (unsigned int)it->second);
-        }
-        else {
-          break;
-        }
+        //if (it->first <= tof_time_){
+        h5writer_->WriteSensorTofInfo(nevt_, (unsigned int)s_id, (float)it->first,
+                                      (unsigned int)it->second);
+          //}
+        //        else {
+        //          break;
+        //        }
       }
     }
   }

@@ -37,4 +37,5 @@
 ### OUTPUT FILE
 /petalosim/persistency/start_id 0
 /petalosim/persistency/outputFile petbox.pet
+/petalosim/persistency/save_tot_charge false
 
