@@ -73,7 +73,6 @@ private:
   G4int sensor_depth_;      ///< Depth of the SD in the geometry tree
   G4int mother_depth_;      ///< Depth of the SD's mother in the geometry tree
   G4int grandmother_depth_; ///< Depth of the SD's grandmother in the geometry tree
-
   G4int box_geom_; ///< Boolean required to change the naming_order_ for the case of the BoxSetup
 
   PetSensorHitsCollection *HC_; ///< Pointer to the collection of hits
