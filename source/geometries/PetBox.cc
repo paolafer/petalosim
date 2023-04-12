@@ -618,14 +618,14 @@ void PetBox::BuildBox()
         chdet_logic->SetSensitiveDetector(chargesd);
       }
 
-    G4VisAttributes wire_col = nexus::Blue();
+    G4VisAttributes wire_col = nexus::Lilla();
     wire_col.SetForceSolid(true);
     chdet_logic->SetVisAttributes(wire_col);
 
     G4int chdet_copy_no = 0;
     G4String chdet_vol_name = "WIRE_";
     // We place the wire just when the teflon ends, in front of the tiles
-    G4double wire_pos_z = -block_z_pos - holes_pos_z - teflon_holes_depth/2. - wire_z /2;
+    G4double wire_pos_z = -block_z_pos + holes_pos_z - teflon_holes_depth/2. - wire_z /2;
     G4ThreeVector chdet_position(0., 0., wire_pos_z);
 
     for (G4int i=0; i<8; i++) {
