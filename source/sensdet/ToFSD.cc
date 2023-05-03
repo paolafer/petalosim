@@ -104,7 +104,7 @@ G4int ToFSD::FindID(const G4VTouchable *touchable)
     G4int first_id = (init_ids)[grandmotherid];
     snsid = first_id + motherid; // this is the SiPM ID
     
-    snsid = snsid * 10000 + pxlid;
+    snsid = snsid * 100000 + pxlid;
   }
   return snsid;
 }
