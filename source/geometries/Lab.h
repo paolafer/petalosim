@@ -12,14 +12,12 @@
 #include "nexus/GeometryBase.h"
 
 class G4GenericMessenger;
-class Pet2boxes;
-class PetLYSObox;
-class PetLXeCell;
-class PetLYSOCell;
+class LXeCellTOF;
+//class PetLYSOCell;
 
 using namespace nexus;
 
-class Lab : public GeometryBase
+class Lab: public GeometryBase
 {
 public:
   /// Constructor
@@ -34,9 +32,9 @@ public:
 
 private:
   /// Messenger for the definition of control commands
-  G4GenericMessenger *msg_;
+  G4GenericMessenger* msg_;
 
-  PetLXeCell *module_;
+  LXeCellTOF* module_;
 };
 
 #endif
