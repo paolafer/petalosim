@@ -13,7 +13,7 @@
 
 class G4GenericMessenger;
 class LXeCellTOF;
-//class PetLYSOCell;
+class LYSOCellTOF;
 
 using namespace nexus;
 
@@ -34,7 +34,8 @@ private:
   /// Messenger for the definition of control commands
   G4GenericMessenger* msg_;
 
-  LXeCellTOF* module_;
+  // LXeCellTOF* module_;
+  LYSOCellTOF* module_;
 };
 
 #endif

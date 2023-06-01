@@ -9,7 +9,7 @@
 #include "Lab.h"
 #include "Pet2boxes.h"
 #include "LXeCellTOF.h"
-//#include "LYSOCell.h"
+#include "LYSOCellTOF.h"
 #include "SiPMHamamatsuVUV.h"
 
 #include "nexus/IonizationSD.h"
@@ -35,7 +35,8 @@ Lab::Lab(): GeometryBase(), msg_(0)
   msg_ = new G4GenericMessenger(this, "/Geometry/Lab/",
                                 "Control commands of geometry Lab.");
 
-  module_ = new LXeCellTOF();
+  //module_ = new LXeCellTOF();
+  module_ = new LYSOCellTOF();
 }
 
 Lab::~Lab()
@@ -66,13 +67,16 @@ void Lab::Construct()
 
   G4LogicalVolume* module_logic = module_->GetLogicalVolume();
 
-  new G4PVPlacement(0, G4ThreeVector(0., 0., -5.*mm - cell_dim.z()/2.), module_logic, "MODULE_0",
+  new G4PVPlacement(0, G4ThreeVector(0., 0., -5.*mm - cell_dim.z()/2.),
+                    module_logic, "MODULE_0",
                     lab_logic, false, 0, true);
 
   G4RotationMatrix rot;
   rot.rotateY(pi);
-  new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., 5.*mm + cell_dim.z()/2.)), module_logic,
-                    "MODULE_1", lab_logic, false, 1, true);
+  new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., 5.*mm + cell_dim.z()/2.)),
+                    module_logic, "MODULE_1", lab_logic, false, 1, true);
+
+  //G4cout << "Placement: " << 5.*mm + cell_dim.z()/2. << ", semilunghezza: " <<  << G4endl;
 
 }
 
