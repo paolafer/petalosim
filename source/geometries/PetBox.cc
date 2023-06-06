@@ -579,7 +579,7 @@ void PetBox::BuildBox()
     G4OpticalSurface* teflon_optSurf =
       new G4OpticalSurface("TEFLON_OPSURF", unified, ground, dielectric_metal);
 
-    teflon_optSurf->SetMaterialPropertiesTable(petopticalprops::PTFE());
+    teflon_optSurf->SetMaterialPropertiesTable(petopticalprops::ReflectantSurface(0));
 
       new G4LogicalSkinSurface("TEFLON_OPSURF", teflon_block_logic, teflon_optSurf);
 
