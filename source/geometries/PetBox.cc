@@ -12,7 +12,6 @@
 #include "TileFBK.h"
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
-#include "Na22Source.h"
 #include "Ba133Source.h"
 
 #include "nexus/Visibilities.h"
@@ -248,7 +247,7 @@ void PetBox::BuildBox()
   G4double na22_pos = - box_size_/2 + box_thickness_ + air_source_tube_len / 2. - source_offset_y;
 
   new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., na22_pos)), na22_logic,
-                    "NA22_SOURCE_SUPPORT", air_source_tube_logic, false, 0, false);
+                    "BA133_SOURCE_SUPPORT", air_source_tube_logic, false, 0, false);
 
   source_gen_ = new SpherePointSampler(0, na22.GetSourceDiameter()/2,
                                        G4ThreeVector(0, source_offset_y, 0.));
