@@ -11,9 +11,8 @@
 
 #include "nexus/GeometryBase.h"
 
-namespace nexus {
 
-  class DiskSource: public GeometryBase {
+class DiskSource: public nexus::GeometryBase {
   public:
     /// Constructor
     DiskSource() {}
@@ -50,5 +49,4 @@ namespace nexus {
 
   inline G4double DiskSource::GetSupportThickness() const { return support_thick_;}
 
-}
 #endif
