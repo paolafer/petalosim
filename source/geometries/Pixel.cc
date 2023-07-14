@@ -135,6 +135,7 @@ void Pixel::Construct()
     sipmsd->SetGrandMotherVolumeDepth(2);
     sipmsd->SetDetectorNamingOrder(0);
     sipmsd->SetBoxGeom(1);
+    sipmsd->SetSiPMCells(1);
 
     G4SDManager::GetSDMpointer()->AddNewDetector(sipmsd);
     active_cell_logic->SetSensitiveDetector(sipmsd);
