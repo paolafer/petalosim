@@ -92,6 +92,7 @@ private:
   G4double tof_time_;
   G4bool sns_only_;
   G4bool save_tot_charge_;
+  G4bool sipm_cells_;
   HDF5Writer *h5writer_; ///< Event writer to hdf5 file
 
   G4double bin_size_, tof_bin_size_, wire_bin_size_;

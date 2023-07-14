@@ -49,7 +49,7 @@ PetaloPersistencyManager::PetaloPersistencyManager():
   efield_(0), event_type_("other"),
   saved_evts_(0), interacting_evts_(0), nevt_(0), start_id_(0), first_evt_(true),
   thr_charge_(0), tof_time_(50.*nanosecond), sns_only_(false),
-  save_tot_charge_(true), h5writer_(0)
+  save_tot_charge_(true), sipm_cells_(false), h5writer_(0)
 {
   msg_ = new G4GenericMessenger(this, "/petalosim/persistency/");
   msg_->DeclareProperty("output_file", output_file_, "Path of output file.");
@@ -60,6 +60,8 @@ PetaloPersistencyManager::PetaloPersistencyManager():
   msg_->DeclareProperty("thr_charge", thr_charge_, "Threshold for the charge saved in file.");
   msg_->DeclareProperty("sns_only", sns_only_, "If true, no true information is saved.");
   msg_->DeclareProperty("save_tot_charge", save_tot_charge_, "If true, total charge is saved.");
+  msg_->DeclareProperty("sipm_cells", sipm_cells_,
+                        "True if each individual cell of SiPMs is simulated.");
 
   G4GenericMessenger::Command& time_cmd =
     msg_->DeclareProperty("tof_time", tof_time_, "Time saved in tof table per sensor");
@@ -313,12 +315,17 @@ void PetaloPersistencyManager::StoreSensorHits(G4VHitsCollection* hc)
       const std::map<G4double, G4int>& phot = hit->GetPhotonMap();
       std::map<G4double, G4int>::const_iterator it;
       for (it = phot.begin(); it != phot.end(); ++it) {
-        if (it->first <= tof_time_){
+        if (sipm_cells_) {
           h5writer_->WriteSensorTofInfo(nevt_, (unsigned int)s_id, (float)it->first,
                                         (unsigned int)it->second);
-        }
-        else {
-          break;
+        } else {
+          if (it->first <= tof_time_){
+            h5writer_->WriteSensorTofInfo(nevt_, (unsigned int)s_id, (float)it->first,
+                                          (unsigned int)it->second);
+          }
+          else {
+            break;
+          }
         }
       }
     }
