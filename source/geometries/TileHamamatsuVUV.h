@@ -15,8 +15,6 @@
 
 class G4GenericMessenger;
 
-class SiPMHamamatsuVUV;
-
 using namespace nexus;
 
 class TileHamamatsuVUV : public TileGeometryBase
@@ -45,7 +43,8 @@ private:
   G4double quartz_rindex_;
   G4double quartz_thick_;
 
-  SiPMHamamatsuVUV *sipm_;
+  G4GenericMessenger* msg_;
+  G4bool sipm_cells_;
 };
 
 #endif

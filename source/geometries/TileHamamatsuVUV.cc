@@ -10,6 +10,7 @@
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
 #include "SiPMHamamatsuVUV.h"
+#include "SiPMCells.h"
 
 #include "nexus/Visibilities.h"
 #include "nexus/IonizationSD.h"
@@ -32,6 +33,7 @@ using namespace nexus;
 using namespace CLHEP;
 
 TileHamamatsuVUV::TileHamamatsuVUV() : TileGeometryBase(),
+                                       sipm_cells_(false),
                                        tile_x_(30.9 * mm),
                                        tile_y_(30.7 * mm),
                                        tile_z_(2.3 * mm),
@@ -43,7 +45,11 @@ TileHamamatsuVUV::TileHamamatsuVUV() : TileGeometryBase(),
                                        quartz_thick_(0.6 * mm)
 
 {
-  sipm_ = new SiPMHamamatsuVUV();
+  msg_ = new G4GenericMessenger(this, "/Geometry/TileHamamatsuVUV/",
+                                "Control commands of geometry TileHamamatsuVUV.");
+  msg_->DeclareProperty("sipm_cells", sipm_cells_,
+                        "True if every microcell of the SiPM is simulated");
+
 }
 
 TileHamamatsuVUV::~TileHamamatsuVUV()
@@ -68,15 +74,23 @@ void TileHamamatsuVUV::Construct()
   fr4_opsurf->SetMaterialPropertiesTable(petopticalprops::ReflectantSurface(GetTileReflectivity()));
 
   new G4LogicalSkinSurface("FR4_OPSURF", tile_logic, fr4_opsurf);
-
-  sipm_->SetSensorDepth(1);
-  sipm_->SetMotherDepth(2);
-  sipm_->SetBoxGeom(GetBoxGeom());
-  // The SiPMs will have the same visibility as the tile
-  sipm_->SetVisibility(GetTileVisibility());
-
-  sipm_->Construct();
-  G4ThreeVector sipm_dim = sipm_->GetDimensions();
+  SiPMHamamatsuVUV sipm;
+  SiPMCells sipm_sat;
+  G4ThreeVector sipm_dim;
+  
+  if (sipm_cells_) {
+    sipm_sat.Construct();
+    sipm_dim = sipm_sat.GetDimensions();
+  } else {
+    sipm.SetSensorDepth(1);
+    sipm.SetMotherDepth(2);
+    sipm.SetBoxGeom(GetBoxGeom());
+    // The SiPMs will have the same visibility as the tile
+    sipm.SetVisibility(GetTileVisibility());
+    
+    sipm.Construct();
+    sipm_dim = sipm.GetDimensions();
+  }
 
   G4double offset_x = (tile_x_ - ((n_columns_ - 1) * sipm_pitch_) - sipm_dim.x()) / 2.;
   G4double offset_y = (tile_y_ - ((n_rows_ - 1) * sipm_pitch_) - sipm_dim.y()) / 2.;
@@ -127,9 +141,14 @@ void TileHamamatsuVUV::Construct()
   IonizationSD *ionisd = new IonizationSD("/PETALO/ACTIVE_LXE_TILE");
   active_logic->SetSensitiveDetector(ionisd);
   G4SDManager::GetSDMpointer()->AddNewDetector(ionisd);
-
+  
   // SiPMs
-  G4LogicalVolume *sipm_logic = sipm_->GetLogicalVolume();
+  G4LogicalVolume* sipm_logic;
+  if (sipm_cells_) {
+    sipm_logic = sipm_sat.GetLogicalVolume();
+  } else {
+    sipm_logic = sipm.GetLogicalVolume();
+  }
 
   for (int j = 0; j < n_rows_; j++)
   {
