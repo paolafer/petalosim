@@ -9,7 +9,7 @@
 /Geometry/PetBox/tile_vis true
 /Geometry/PetBox/tile_refl 0.
 
-/Geometry/TileHamamatsuVUV/sipm_cells true
+/Geometry/PetBox/sipm_cells true
 
 ### GENERATOR
 /Generator/IonGenerator/region SOURCE

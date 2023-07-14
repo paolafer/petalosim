@@ -82,6 +82,7 @@ PetBox::PetBox() : GeometryBase(),
                    dist_sipms_panel_sipms_(0.3 * mm),
                    wls_depth_(0.001 * mm),
                    add_teflon_block_(0),
+                   sipm_cells_(false),
                    max_step_size_(1. * mm),
                    pressure_(1 * bar)
 
@@ -110,6 +111,7 @@ PetBox::PetBox() : GeometryBase(),
 
   msg_->DeclareProperty("add_teflon_block", add_teflon_block_,
     "Boolean to add a teflon block that reduces the xenon volume");
+  msg_->DeclareProperty("sipm_cells", sipm_cells_, "True if each cell of SiPMs is simulated");
 
   G4GenericMessenger::Command &press_cmd =
     msg_->DeclareProperty("pressure", pressure_,
@@ -282,6 +284,7 @@ void PetBox::BuildBox()
 
   if (tile_type_d_ == "HamamatsuVUV") {
     tile_ = new TileHamamatsuVUV();
+    tile_->SetSiPMCells(sipm_cells_);
     dist_dice_flange_ = dist_ham_vuv_;
   } else if (tile_type_d_ == "HamamatsuBlue") {
     tile_ = new TileHamamatsuBlue();

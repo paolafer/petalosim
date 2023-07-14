@@ -98,6 +98,8 @@ private:
   G4GenericMessenger* msg_;
 
   SpherePointSampler* source_gen_;
+
+  G4bool sipm_cells_;
 };
 
 #endif

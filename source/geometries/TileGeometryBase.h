@@ -34,6 +34,9 @@ public:
   void SetPDE(G4double eff);
   G4double GetPDE() const;
 
+  void SetSiPMCells(G4int cells);
+  G4int GetSiPMCells() const;
+
   void SetMotherPhysicalVolume(G4VPhysicalVolume *mpv);
   G4VPhysicalVolume *GetMotherPhysicalVolume() const;
 
@@ -49,6 +52,7 @@ private:
   G4bool tile_vis_;
   G4double tile_refl_;
   G4double sipm_pde_;
+  G4bool sipm_cells_;
 };
 
 // Inline definitions ///////////////////////////////////
@@ -67,6 +71,9 @@ inline G4double TileGeometryBase::GetTileReflectivity() const { return tile_refl
 
 inline void TileGeometryBase::SetPDE(G4double eff) { sipm_pde_ = eff; }
 inline G4double TileGeometryBase::GetPDE() const { return sipm_pde_; }
+
+inline void TileGeometryBase::SetSiPMCells(G4int cells) { sipm_cells_ = cells; }
+inline G4int TileGeometryBase::GetSiPMCells() const { return sipm_cells_; }
 
 inline void TileGeometryBase::SetMotherPhysicalVolume(G4VPhysicalVolume *mpv) { mpv_ = mpv; }
 inline G4VPhysicalVolume *TileGeometryBase::GetMotherPhysicalVolume() const { return mpv_; }
