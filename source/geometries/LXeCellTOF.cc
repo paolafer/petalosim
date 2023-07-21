@@ -12,6 +12,7 @@
 
 #include "nexus/IonizationSD.h"
 #include "nexus/FactoryBase.h"
+#include "nexus/MaterialsList.h"
 
 #include <G4GenericMessenger.hh>
 #include <G4Box.hh>
@@ -63,9 +64,11 @@ void LXeCellTOF::Construct()
   sipm.SetSensorDepth(2);
   sipm.Construct();
   G4ThreeVector sipm_dim = sipm.GetDimensions();
+  G4double quartz_thick = 0.6 * mm;
+  G4double lxe_thickn_behind_quartz = 0.6 * mm;
 
   G4double cell_xy  = xy_size_ + 2*mm;
-  G4double cell_z   = z_size_ + 2*sipm_dim.z();
+  G4double cell_z   = z_size_ + 2*(sipm_dim.z() + quartz_thick + lxe_thickn_behind_quartz);
   G4Box* cell_solid = new G4Box("CELL", cell_xy/2., cell_xy/2., cell_z/2.);
 
   SetDimensions(G4ThreeVector(cell_xy, cell_xy, cell_z));
@@ -87,7 +90,8 @@ void LXeCellTOF::Construct()
 
 
   G4Box* active_solid =
-    new G4Box("ACTIVE", xy_size_/2., xy_size_/2., z_size_/2.);
+    new G4Box("ACTIVE", xy_size_/2., xy_size_/2.,
+              (z_size_ + 2*(quartz_thick + lxe_thickn_behind_quartz))/2.);
 
   G4Material* LXe = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
   LXe->SetMaterialPropertiesTable(petopticalprops::LXe(1.*bar));
@@ -113,4 +117,20 @@ void LXeCellTOF::Construct()
      new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., cell_z/2.-sipm_dim.z()/2.)),
                        sipm_logic, "SIPM", cell_logic, false, 1, true);
    }
+
+
+   // Layer of quartz defined inside the LXe
+   G4Box* quartz_solid = new G4Box("QUARTZ_WINDOW", xy_size_/2., xy_size_/2.,
+                                   quartz_thick/2);
+
+   G4Material* quartz = materials::FusedSilica();
+   quartz->SetMaterialPropertiesTable(petopticalprops::FakeGenericMaterial(1.6));
+
+   G4LogicalVolume* quartz_logic =
+     new G4LogicalVolume(quartz_solid, quartz, "QUARTZ_WINDOW");
+
+
+   G4double zpos_quartz = z_size_/2. + quartz_thick/2.;
+   new G4PVPlacement(0, G4ThreeVector(0., 0., zpos_quartz), quartz_logic,
+                     "QUARTZ_WINDOW", active_logic, false, 0, false);
 }
