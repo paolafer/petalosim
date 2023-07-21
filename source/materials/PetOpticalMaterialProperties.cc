@@ -712,8 +712,6 @@ G4MaterialPropertiesTable* LYSO()
 G4MaterialPropertiesTable* LYSO_nconst()
 {
   G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();
-  G4double const lyso_minE = 1.5 * eV;
-  G4double const lyso_maxE = 4.0 * eV;
 
   G4double const lyso_minE = 1.9630 * eV; // this value should be changed to the lower limit of detection of the specific photosensor used
   G4double const lyso_maxE = 3.3429 * eV; // this value should be changed to the upper limit of detection of the specific photosensor used
