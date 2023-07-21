@@ -13,8 +13,6 @@
 
 #include <G4ThreeVector.hh>
 
-class G4GenericMessenger;
-
 using namespace nexus;
 
 class TileHamamatsuVUV : public TileGeometryBase
@@ -43,7 +41,6 @@ private:
   G4double quartz_rindex_;
   G4double quartz_thick_;
 
-  G4GenericMessenger* msg_;
   G4bool sipm_cells_;
 };
 

@@ -45,11 +45,6 @@ TileHamamatsuVUV::TileHamamatsuVUV() : TileGeometryBase(),
                                        quartz_thick_(0.6 * mm)
 
 {
-  msg_ = new G4GenericMessenger(this, "/Geometry/TileHamamatsuVUV/",
-                                "Control commands of geometry TileHamamatsuVUV.");
-  msg_->DeclareProperty("sipm_cells", sipm_cells_,
-                        "True if every microcell of the SiPM is simulated");
-
 }
 
 TileHamamatsuVUV::~TileHamamatsuVUV()
