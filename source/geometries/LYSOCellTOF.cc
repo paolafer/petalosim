@@ -9,6 +9,7 @@
 #include "LYSOCellTOF.h"
 #include "SiPMLYSO.h"
 #include "PetOpticalMaterialProperties.h"
+#include "PetMaterialsList.h"
 
 #include "nexus/IonizationSD.h"
 #include "nexus/FactoryBase.h"
@@ -89,10 +90,11 @@ void LYSOCellTOF::Construct()
   G4Box* active_solid =
     new G4Box("ACTIVE", xy_size_/2., xy_size_/2., z_size_/2.);
 
-  G4Material* LXe = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
-  LXe->SetMaterialPropertiesTable(petopticalprops::LXe(1.*bar));
+  G4Material* LYSO = petmaterials::LYSO();
+  LYSO->SetMaterialPropertiesTable(petopticalprops::LYSO());
 
-  G4LogicalVolume* active_logic = new G4LogicalVolume(active_solid, LXe, "ACTIVE");
+  G4LogicalVolume* active_logic =
+    new G4LogicalVolume(active_solid, LYSO, "ACTIVE");
 
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.),
                    active_logic, "ACTIVE", cell_logic, false, 0, true);

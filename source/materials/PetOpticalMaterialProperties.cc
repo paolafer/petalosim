@@ -685,6 +685,7 @@ G4MaterialPropertiesTable* LYSO()
      15.633802816901408, 14.577464788732392, 11.338028169014079, 10.281690140845065, 8.943661971830984,
      7.746478873239432, 6.760563380281688, 5.7042253521126725, 4.718309859154921, 3.450704225352105,
      2.3239436619718252, 1.4084507042253518, 0.};
+
   mpt->AddProperty("SCINTILLATIONCOMPONENT1", sc_energy, intensity);
 
   // S Seifert et al 2012 JINST 7 P09004
@@ -701,6 +702,7 @@ G4MaterialPropertiesTable* LYSO()
 
   std::vector<G4double> rayleigh_energy = {lyso_minE, lyso_maxE};
   std::vector<G4double> rayleigh_length = {260.*cm, 260.*cm};
+
   mpt->AddProperty("RAYLEIGH", rayleigh_energy, rayleigh_length);
 
   return mpt;
