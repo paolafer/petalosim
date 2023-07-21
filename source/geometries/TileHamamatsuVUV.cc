@@ -33,7 +33,6 @@ using namespace nexus;
 using namespace CLHEP;
 
 TileHamamatsuVUV::TileHamamatsuVUV() : TileGeometryBase(),
-                                       sipm_cells_(false),
                                        tile_x_(30.9 * mm),
                                        tile_y_(30.7 * mm),
                                        tile_z_(2.3 * mm),
@@ -42,7 +41,8 @@ TileHamamatsuVUV::TileHamamatsuVUV() : TileGeometryBase(),
                                        n_columns_(4),
                                        lxe_thick_(0.6 * mm),
                                        quartz_rindex_(1.6), //Given by Hamamatsu
-                                       quartz_thick_(0.6 * mm)
+                                       quartz_thick_(0.6 * mm),
+                                       sipm_cells_(false)
 
 {
 }

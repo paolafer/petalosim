@@ -82,9 +82,9 @@ PetBox::PetBox() : GeometryBase(),
                    dist_sipms_panel_sipms_(0.3 * mm),
                    wls_depth_(0.001 * mm),
                    add_teflon_block_(0),
-                   sipm_cells_(false),
                    max_step_size_(1. * mm),
-                   pressure_(1 * bar)
+                   pressure_(1 * bar),
+                   sipm_cells_(false)
 
 {
   // Messenger
