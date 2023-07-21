@@ -632,6 +632,7 @@ G4MaterialPropertiesTable* LYSO()
 {
   G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();
 
+
   G4double const lyso_minE = 1.9630 * eV; // this value should be changed to the lower limit of detection of the specific photosensor used
   G4double const lyso_maxE = 3.3429 * eV; // this value should be changed to the upper limit of detection of the specific photosensor used
 
@@ -711,6 +712,8 @@ G4MaterialPropertiesTable* LYSO()
 G4MaterialPropertiesTable* LYSO_nconst()
 {
   G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();
+  G4double const lyso_minE = 1.5 * eV;
+  G4double const lyso_maxE = 4.0 * eV;
 
   G4double const lyso_minE = 1.9630 * eV; // this value should be changed to the lower limit of detection of the specific photosensor used
   G4double const lyso_maxE = 3.3429 * eV; // this value should be changed to the upper limit of detection of the specific photosensor used
@@ -763,6 +766,7 @@ G4MaterialPropertiesTable* LYSO_nconst()
 
   std::vector<G4double> abs_energy = {lyso_minE, lyso_maxE};
   std::vector<G4double> abs_length = {50.*cm, 50.*cm};
+
   mpt->AddProperty("ABSLENGTH", abs_energy, abs_length);
 
   std::vector<G4double> rayleigh_energy = {lyso_minE, lyso_maxE};
