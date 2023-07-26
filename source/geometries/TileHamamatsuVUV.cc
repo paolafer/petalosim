@@ -41,8 +41,7 @@ TileHamamatsuVUV::TileHamamatsuVUV() : TileGeometryBase(),
                                        n_columns_(4),
                                        lxe_thick_(0.6 * mm),
                                        quartz_rindex_(1.6), //Given by Hamamatsu
-                                       quartz_thick_(0.6 * mm),
-                                       sipm_cells_(false)
+                                       quartz_thick_(0.6 * mm)
 
 {
 }
@@ -72,8 +71,7 @@ void TileHamamatsuVUV::Construct()
   SiPMHamamatsuVUV sipm;
   SiPMCells sipm_sat;
   G4ThreeVector sipm_dim;
-  
-  if (sipm_cells_) {
+  if (GetSiPMCells()) {
     sipm_sat.Construct();
     sipm_dim = sipm_sat.GetDimensions();
   } else {
@@ -139,7 +137,7 @@ void TileHamamatsuVUV::Construct()
   
   // SiPMs
   G4LogicalVolume* sipm_logic;
-  if (sipm_cells_) {
+  if (GetSiPMCells()) {
     sipm_logic = sipm_sat.GetLogicalVolume();
   } else {
     sipm_logic = sipm.GetLogicalVolume();

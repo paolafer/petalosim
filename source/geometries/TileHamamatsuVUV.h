@@ -40,8 +40,6 @@ private:
   G4double lxe_thick_;
   G4double quartz_rindex_;
   G4double quartz_thick_;
-
-  G4bool sipm_cells_;
 };
 
 #endif
