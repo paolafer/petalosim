@@ -15,6 +15,7 @@
 
 class G4GenericMessenger;
 class SiPMFBKVUV;
+class SiPMFBKVUVCells;
 
 using namespace nexus;
 
@@ -44,6 +45,7 @@ using namespace nexus;
     G4int n_rows_, n_columns_;
 
     SiPMFBKVUV* sipm_;
+    SiPMFBKVUVCells* sipm_sat_;
 
   };
 

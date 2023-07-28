@@ -10,6 +10,7 @@
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
 #include "SiPMFBKVUV.h"
+#include "SiPMFBKVUVCells.h"
 
 #include "nexus/IonizationSD.h"
 #include "nexus/Visibilities.h"
@@ -39,6 +40,7 @@ TileFBK::TileFBK() : TileGeometryBase(),
 
 {
   sipm_ = new SiPMFBKVUV();
+  sipm_sat_ = new SiPMFBKVUVCells();
 }
 
 TileFBK::~TileFBK()
@@ -64,20 +66,34 @@ void TileFBK::Construct()
 
   new G4LogicalSkinSurface("FR4_OPSURF", tile_logic, fr4_opsurf);
 
-  sipm_->SetSensorDepth(1);
-  sipm_->SetMotherDepth(2);
-  sipm_->SetBoxGeom(GetBoxGeom());
-  sipm_->SetVisibility(GetTileVisibility());
-  sipm_->SetPDE(GetPDE());
+  G4ThreeVector sipm_dim;
+  if (GetSiPMCells()) {
+    sipm_sat_->SetPDE(GetPDE());
+    sipm_sat_->Construct();
+    sipm_dim = sipm_sat_->GetDimensions();
+  } else {
 
-  sipm_->Construct();
-  G4ThreeVector sipm_dim = sipm_->GetDimensions();
+    sipm_->SetSensorDepth(1);
+    sipm_->SetMotherDepth(2);
+    sipm_->SetBoxGeom(GetBoxGeom());
+    sipm_->SetVisibility(GetTileVisibility());
+    sipm_->SetPDE(GetPDE());
+    
+    sipm_->Construct();
+    sipm_dim = sipm_->GetDimensions();
+  }
 
   G4double offset_x = 0.95 * mm;
   G4double offset_y = 0.55 * mm;
 
   // SiPMs
-  G4LogicalVolume *sipm_logic = sipm_->GetLogicalVolume();
+  G4LogicalVolume* sipm_logic;
+
+  if (GetSiPMCells()) {
+    sipm_logic = sipm_sat_->GetLogicalVolume();
+  } else {
+    sipm_logic = sipm_->GetLogicalVolume();
+  }
 
   G4int copy_no;
   G4int init_val = 10;
@@ -98,7 +114,7 @@ void TileFBK::Construct()
       G4double x_pos = -tile_x_ / 2. + offset_x + sipm_dim.x() / 2. + j * sipm_pitch_;
       G4double y_pos = tile_y_ / 2. - offset_y - sipm_dim.y() / 2. - i * sipm_pitch_;
       G4double z_pos = tile_z_ / 2. - sipm_dim.z() / 2.;
-      G4String vol_name = "SiPMpetFBK_" + std::to_string(copy_no);
+      G4String vol_name = "SiPMFBKVUV_" + std::to_string(copy_no);
       new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, z_pos),
                         sipm_logic, vol_name, tile_logic, false, copy_no, false);
     }
