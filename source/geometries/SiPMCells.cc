@@ -63,9 +63,10 @@ void SiPMCells::Construct()
   G4double pxl_depth = pxl.GetDimensions().z();
   
   G4double number_of_pixels = 6162;
-  G4double pitch  = std::sqrt(sipm_x*sipm_y/number_of_pixels);
+  G4double pitch  = 0.075 * mm;
   G4int n_rows    = sipm_x / pitch;
   G4int n_columns = sipm_y / pitch;
+  assert(n_rows*n_columns == number_of_pixels);
 
   G4double x = 0;
   G4double y = 0;
