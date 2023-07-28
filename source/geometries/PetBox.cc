@@ -639,7 +639,7 @@ void PetBox::BuildSensors()
   // In the second case, we can have the single tile in the "detection"
   // or in the "coincidence" plane. In the simulation, the only difference is the
   // order of placement, which reflects into the numbering of the SiPMs.
-  
+
   /// "Detection" plane ///
 
   G4double tile_size_x = tile_->GetDimensions().x();
@@ -664,7 +664,7 @@ void PetBox::BuildSensors()
           {
             G4double x_pos = -full_row_size_/2. + tile_size_x/2. + i*tile_size_x;
             vol_name = "TILE_" + std::to_string(copy_no);
-            
+
             new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, z_pos), tile_logic,
                               vol_name, active_logic_, false, copy_no, false);
             copy_no += 1;
@@ -673,7 +673,7 @@ void PetBox::BuildSensors()
   }
 
   /// "Coincidence" plane ///
-  
+
   G4RotationMatrix rot;
   rot.rotateY(pi);
 
@@ -707,7 +707,7 @@ void PetBox::BuildSensors()
       vol_name = "TILE_" + std::to_string(copy_no);
       new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., -z_pos)),
                         tile_logic, vol_name, active_logic_, false, copy_no, false);
-    } else { 
+    } else {
 
       /// 4 TILES
       for (G4int j=0; j<n_tile_rows_; j++) {
