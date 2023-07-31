@@ -56,10 +56,12 @@ void SiPMFBKVUVCells::Construct()
   pxl.Construct();
   G4LogicalVolume* pxl_logic = pxl.GetLogicalVolume();
   G4double pxl_depth = pxl.GetDimensions().z();
-  
+
+  G4double number_of_pixels = 8245;
   G4double pitch  = 0.035 * mm;
   G4int n_rows    = sipm_x / pitch;
   G4int n_columns = sipm_y / pitch;
+  assert(n_rows*n_columns == number_of_pixels);
 
   G4double x = 0;
   G4double y = 0;
