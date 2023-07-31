@@ -73,7 +73,7 @@ void PixelFBKVUV::Construct()
 
   // SENSITIVE DETECTOR ////////////////////////////////////////////
 
-  G4String sdname = "/SIPM/SiPMHmtsuVUV";
+  G4String sdname = "/SIPM/SiPMFBKVUV";
   G4SDManager* sdmgr = G4SDManager::GetSDMpointer();
 
   if (!sdmgr->FindSensitiveDetector(sdname, false))
