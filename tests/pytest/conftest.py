@@ -139,6 +139,35 @@ def petalosim_params_pet_box_mix_Ham_FBK(output_tmpdir):
     return os.path.join(output_tmpdir, base_name+'.h5'), base_name, tile_type1, tile_type2, n_sipm, sipms_per_tile, init_sns_id1, init_sns_id2, sensor_name, min_charge_evt
 
 
+@pytest.fixture(scope = 'session')
+def petalosim_params_pet_box_HamamatsuVUV_sat(output_tmpdir):
+    base_name      = 'PET_box_HamamatsuVUV_sat_test'
+    tile_type1     = 'HamamatsuVUV'
+    tile_type2     = 'HamamatsuVUV'
+    single_tile1   = 0
+    single_tile2   = 0
+    n_sipm1         = 64*6162
+    n_sipm2         = 64*6162
+    init_sns_id1   = 110000
+    init_sns_id2   = 1110000
+    sensor_name    = 'SiPMHmtsuVUV'
+    return os.path.join(output_tmpdir, base_name+'.h5'), base_name, tile_type1, tile_type2, single_tile1, single_tile2, n_sipm1, n_sipm2, init_sns_id1, init_sns_id2, sensor_name
+
+@pytest.fixture(scope = 'session')
+def petalosim_params_pet_box_mix_Ham_FBK_sat(output_tmpdir):
+    base_name      = 'PET_box_mix_Ham_FBK_sat_test'
+    tile_type1     = 'FBK'
+    tile_type2     = 'HamamatsuVUV'
+    single_tile1   = 1
+    single_tile2   = 0
+    n_sipm1        = 64*8245
+    n_sipm2        = 64*6162
+    init_sns_id1   = 110000
+    init_sns_id2   = 1110000
+    sensor_name    = 'SiPMFBKVUV', 'SiPMHmtsuVUV'
+    return os.path.join(output_tmpdir, base_name+'.h5'), base_name, tile_type1, tile_type2, single_tile1, single_tile2, n_sipm1, n_sipm2, init_sns_id1, init_sns_id2, sensor_name
+
+
 @pytest.fixture(scope="module",
                 params=["base_name_full_body", "base_name_nest", "base_name_ring_tiles",
                         "base_name_pet_box_HamamatsuVUV", "base_name_pet_box_HamamatsuBlue",
@@ -161,4 +190,11 @@ def petalosim_params(request):
                         "petalosim_params_pet_box_FBK", "petalosim_params_pet_box_mix_Ham_FBK"],
                 ids=["pet_box_HamamatsuVUV", "pet_box_HamamatsuBlue", "pet_box_FBK", 'pet_box_mix_Ham_FBK'])
 def petalosim_pet_box_params(request):
+    return request.getfixturevalue(request.param)
+
+
+@pytest.fixture(scope="module",
+                params=["petalosim_params_pet_box_HamamatsuVUV_sat", "petalosim_params_pet_box_mix_Ham_FBK_sat"],
+                ids=["pet_box_HamamatsuVUV", "pet_box_mix_Ham_FBK"])
+def petalosim_pet_box_params_sat(request):
     return request.getfixturevalue(request.param)

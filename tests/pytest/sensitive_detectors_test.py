@@ -73,3 +73,40 @@ def test_sensor_ids_pet_box(petalosim_pet_box_params):
      # Check that all the stored events have detected charge
      mcparticles = pd.read_hdf(filename, 'MC/particles')
      assert mcparticles.event_id.nunique() == sns_response.event_id.nunique()
+
+
+def test_sensor_ids_pet_box_sat(petalosim_pet_box_params_sat):
+     """
+     Check that sensors are correctly numbered for the PetBox geometry,
+     when each SiPM microcell is simulated, to include saturation.
+     """
+     filename, _, _, _, _, _, nsipm1, nsipm2, init_sns_id1, init_sns_id2, sensor_name = petalosim_pet_box_params_sat
+
+     sns_response = pd.read_hdf(filename, 'MC/tof_sns_response')
+     sipm_ids     = sns_response.sensor_id.unique()
+     sipm_ids1    = sipm_ids[sipm_ids < 1000000]
+     sipm_ids2    = sipm_ids[sipm_ids > 1000000]
+
+     assert 1 < len(sipm_ids1) <= nsipm1
+     assert 1 < len(sipm_ids2) <= nsipm2
+
+     # No sensor position is repeated
+     sns_positions = pd.read_hdf(filename, 'MC/sns_positions')
+     assert len(sns_positions) == len(sns_positions.sensor_id.unique())
+     assert min(sipm_ids) >= init_sns_id1
+
+     if len(sensor_name) == 2:
+         assert sns_positions.sensor_name.nunique() == 2
+     else:
+         assert sns_positions.sensor_name.unique() == sensor_name
+
+     first_id_second_plane = 1110000
+     sns_z_pos_left  = sns_positions[ sns_positions.sensor_id<first_id_second_plane].z.values
+     sns_z_pos_right = sns_positions[~sns_positions.sensor_id<first_id_second_plane].z.values
+     if len(sns_z_pos_left) > 0:
+         assert len(np.unique(sns_z_pos_left)) == 1
+         assert     np.unique(sns_z_pos_left)  < 0
+
+     if len(sns_z_pos_right) > 0:
+         assert len(np.unique(sns_z_pos_right)) == 1
+         assert     np.unique(sns_z_pos_right)  < 0
