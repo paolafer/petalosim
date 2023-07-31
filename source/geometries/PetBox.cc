@@ -13,6 +13,7 @@
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
 #include "Na22Source.h"
+#include "Ba133Source.h"
 
 #include "nexus/Visibilities.h"
 #include "nexus/IonizationSD.h"
@@ -243,7 +244,7 @@ void PetBox::BuildBox()
 
   // ENCAPSULATED SOURCE ///////////////////////////////////////
 
-  Na22Source na22 = Na22Source();
+  Ba133Source na22 = Ba133Source();
   na22.Construct();
   G4LogicalVolume* na22_logic = na22.GetLogicalVolume();
   G4double source_offset_y = -0.9 * mm;
