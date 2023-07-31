@@ -284,8 +284,8 @@ void PetBox::BuildBox()
 
   if (tile_type_d_ == "HamamatsuVUV") {
     tile_ = new TileHamamatsuVUV();
-    //tile_->SetSiPMCells(sipm_cells_);
-    tile_->SetSiPMCells(false);
+    tile_->SetSiPMCells(sipm_cells_);
+    //tile_->SetSiPMCells(false);
     dist_dice_flange_ = dist_ham_vuv_;
   } else if (tile_type_d_ == "HamamatsuBlue") {
     tile_ = new TileHamamatsuBlue();
@@ -321,7 +321,6 @@ void PetBox::BuildBox()
     } else if (tile_type_c_ == "FBK") {
       tile2_ = new TileFBK();
       tile2_->SetSiPMCells(sipm_cells_);
-      //tile2_->SetSiPMCells(false);
       tile2_->SetPDE(sipm_pde_);
       dist_dice_flange2_ = dist_fbk_;
     } else {
@@ -502,15 +501,15 @@ void PetBox::BuildBox()
     }
   } else {
 
-    // if (tile_type_d_ != tile_type_c_) {
-    //   G4Exception("[PetBox]", "BuildBox()", FatalException,
-    //               "Teflon Block only allowed when tiles in both planes are the same!");
-    // } else {
-    //   if (tile_type_d_ == "FBK" or tile_type_d_ == "HamamatsuBlue"){
-    //     G4Exception("[PetBox]", "BuildBox()", FatalException,
-    //                 "Teflon Block only allowed when tiles in both planes are the HamamatsuVUV!");
-    //   }
-    //}
+    if (tile_type_d_ != tile_type_c_) {
+      G4Exception("[PetBox]", "BuildBox()", FatalException,
+                  "Teflon Block only allowed when tiles in both planes are the same!");
+    } else {
+      if (tile_type_d_ == "FBK" or tile_type_d_ == "HamamatsuBlue"){
+        G4Exception("[PetBox]", "BuildBox()", FatalException,
+                    "Teflon Block only allowed when tiles in both planes are the HamamatsuVUV!");
+      }
+    }
 
     // TEFLON BLOCK TO REDUCE XENON VOL  /////////////////////////
 

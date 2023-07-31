@@ -362,11 +362,6 @@ void PetBoxMix::BuildSensors()
 {
   /// "Detection" plane ///
 
-  G4double tile_size_x = tile_->GetDimensions().x();
-  G4double tile_size_y = tile_->GetDimensions().y();
-  full_row_size_ = n_tile_columns_ * tile_size_x;
-  full_col_size_ = n_tile_rows_ * tile_size_y;
-
   G4LogicalVolume* tile_logic = tile_->GetLogicalVolume();
   G4String vol_name;
   G4int copy_no = 0;
@@ -379,13 +374,17 @@ void PetBoxMix::BuildSensors()
   
   /// "Coincidence" plane ///
 
+  G4double tile_size_x = tile2_->GetDimensions().x();
+  G4double tile_size_y = tile2_->GetDimensions().y();
+  full_row_size_ = n_tile_columns_ * tile_size_x;
+  full_col_size_ = n_tile_rows_ * tile_size_y;
+
   G4RotationMatrix rot;
   rot.rotateY(pi);
 
   copy_no = 10;
 
   // 4 tiles
-
   G4LogicalVolume* tile2_logic = tile2_->GetLogicalVolume();
   
   G4double z_pos2 = -box_size_/2. + box_thickness_ + dist_dice_flange2_ + tile2_thickn_/2.;
