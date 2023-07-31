@@ -1,0 +1,41 @@
+### GEOMETRY
+/Geometry/PetBoxMix/visibility true
+/Geometry/PetBoxMix/pressure 1.26 bar
+
+/Geometry/PetBoxMix/tile_vis true
+/Geometry/PetBoxMix/tile_refl 0.
+
+/Geometry/PetBoxMix/sipm_cells true
+
+### GENERATOR
+/Generator/IonGenerator/region SOURCE
+/Generator/IonGenerator/atomic_number 11
+/Generator/IonGenerator/mass_number 22
+#/Generator/SingleParticle/particle geantino
+#/Generator/SingleParticle/min_energy 1  eV
+#/Generator/SingleParticle/max_energy 1 keV
+#/Generator/SingleParticle/region CENTER
+#/Generator/SingleParticle/momentum 0 0 -1
+
+/Actions/PetSensorsEventAction/min_charge 50
+
+### PHYSICS
+#/process/optical/processActivation Scintillation true
+#/process/optical/processActivation Cerenkov      true
+
+### VERBOSITIES
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+/process/em/verbose 0
+
+/nexus/random_seed 132323
+
+### OUTPUT FILE
+/petalosim/persistency/sipm_cells true
+/petalosim/persistency/save_tot_charge false
+
+/petalosim/persistency/start_id 0
+/petalosim/persistency/output_file petbox_mix
+
