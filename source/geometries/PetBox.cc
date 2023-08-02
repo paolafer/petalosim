@@ -12,7 +12,7 @@
 #include "TileFBK.h"
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
-#include "Na22Source.h"
+#include "Co57Source.h"
 
 #include "nexus/Visibilities.h"
 #include "nexus/IonizationSD.h"
@@ -243,16 +243,16 @@ void PetBox::BuildBox()
 
   // ENCAPSULATED SOURCE ///////////////////////////////////////
 
-  Na22Source na22 = Na22Source();
-  na22.Construct();
-  G4LogicalVolume* na22_logic = na22.GetLogicalVolume();
+  Co57Source co57 = Co57Source();
+  co57.Construct();
+  G4LogicalVolume* co57_logic = co57.GetLogicalVolume();
   G4double source_offset_y = -0.9 * mm;
-  G4double na22_pos = - box_size_/2 + box_thickness_ + air_source_tube_len / 2. - source_offset_y;
+  G4double co57_pos = - box_size_/2 + box_thickness_ + air_source_tube_len / 2. - source_offset_y;
 
-  new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., na22_pos)), na22_logic,
-                    "NA22_SOURCE_SUPPORT", air_source_tube_logic, false, 0, false);
+  new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(0., 0., co57_pos)), co57_logic,
+                    "CO57_SOURCE_SUPPORT", air_source_tube_logic, false, 0, false);
 
-  source_gen_ = new SpherePointSampler(0, na22.GetSourceDiameter()/2,
+  source_gen_ = new SpherePointSampler(0, co57.GetSourceDiameter()/2,
                                        G4ThreeVector(0, source_offset_y, 0.));
 
   // SOURCE TUBE INSIDE BOX ////////////////////////////////////
