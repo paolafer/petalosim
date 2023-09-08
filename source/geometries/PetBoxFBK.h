@@ -1,14 +1,14 @@
 // ----------------------------------------------------------------------------
-// petalosim | PetBoxMix.h
+// petalosim | PetBoxFBK.h
 //
-// This class implements the geometry of a box of LXe with two different
+// This class implements the geometry of a box of LXe with two FBK
 // SiPM planes.
 //
 // The PETALO Collaboration
 // ----------------------------------------------------------------------------
 
-#ifndef PET_BOX_MIX_H
-#define PET_BOX_MIX_H
+#ifndef PET_BOX_FBK_H
+#define PET_BOX_FBK_H
 
 #include "nexus/GeometryBase.h"
 #include "TileGeometryBase.h"
@@ -27,14 +27,14 @@ class SpherePointSampler;
 
 using namespace nexus;
 
-class PetBoxMix : public GeometryBase
+class PetBoxFBK : public GeometryBase
 {
 
 public:
   // Constructor
-  PetBoxMix();
+  PetBoxFBK();
   //Destructor
-  ~PetBoxMix();
+  ~PetBoxFBK();
 
   /// Generate a vertex within a given region of the geometry
   G4ThreeVector GenerateVertex(const G4String &region) const;
@@ -66,7 +66,7 @@ private:
   G4double dist_source_roof_, source_tube_thick_roof_;
 
   G4double n_tile_rows_, n_tile_columns_;
-  G4double tile_thickn_, tile2_thickn_, full_row_size_, full_col_size_;
+  G4double tile_thickn_, tile2_thickn_;
 
   G4double dist_lat_panels_;
 

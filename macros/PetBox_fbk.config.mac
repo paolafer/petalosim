@@ -1,11 +1,11 @@
 ### GEOMETRY
-/Geometry/PetBoxMix/visibility true
-/Geometry/PetBoxMix/pressure 1.26 bar
+/Geometry/PetBoxFBK/visibility true
+/Geometry/PetBoxFBK/pressure 1.26 bar
 
-/Geometry/PetBoxMix/tile_vis true
-/Geometry/PetBoxMix/tile_refl 0.
+/Geometry/PetBoxFBK/tile_vis true
+/Geometry/PetBoxFBK/tile_refl 0.
 
-/Geometry/PetBoxMix/sipm_cells true
+/Geometry/PetBoxFBK/sipm_cells false
 
 ### GENERATOR
 /Generator/IonGenerator/region SOURCE
@@ -26,16 +26,16 @@
 ### VERBOSITIES
 /run/verbose 0
 /event/verbose 0
-/tracking/verbose 0
+/tracking/verbose 1
 
 /process/em/verbose 0
 
 /nexus/random_seed 132323
 
 ### OUTPUT FILE
-/petalosim/persistency/sipm_cells true
-/petalosim/persistency/save_tot_charge false
+/petalosim/persistency/sipm_cells false
+/petalosim/persistency/save_tot_charge true
 
 /petalosim/persistency/start_id 0
-/petalosim/persistency/output_file petbox_mix
+/petalosim/persistency/output_file petbox_fbk
 

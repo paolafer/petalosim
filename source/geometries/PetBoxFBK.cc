@@ -1,12 +1,13 @@
 // ----------------------------------------------------------------------------
-// petalosim | PetBoxMix.cc
+// petalosim | PetBoxFBK.cc
 //
-// This class implements the geometry of a symmetric box of LXe.
+// This class implements the geometry of a box of LXe with two FBK
+// SiPM planes.
 //
 // The PETALO Collaboration
 // ----------------------------------------------------------------------------
 
-#include "PetBoxMix.h"
+#include "PetBoxFBK.h"
 #include "TileHamamatsuVUV.h"
 #include "TileFBK.h"
 #include "PetMaterialsList.h"
@@ -38,9 +39,9 @@
 
 using namespace nexus;
 
-REGISTER_CLASS(PetBoxMix, GeometryBase)
+REGISTER_CLASS(PetBoxFBK, GeometryBase)
 
-PetBoxMix::PetBoxMix() : GeometryBase(),
+PetBoxFBK::PetBoxFBK() : GeometryBase(),
                    visibility_(0),
                    reflectivity_(0),
                    tile_vis_(1),
@@ -85,8 +86,8 @@ PetBoxMix::PetBoxMix() : GeometryBase(),
 
 {
   // Messenger
-  msg_ = new G4GenericMessenger(this, "/Geometry/PetBoxMix/",
-                                "Control commands of geometry PetBoxMix.");
+  msg_ = new G4GenericMessenger(this, "/Geometry/PetBoxFBK/",
+                                "Control commands of geometry PetBoxFBK.");
   msg_->DeclareProperty("visibility", visibility_, "Visibility");
   msg_->DeclareProperty("surf_reflectivity", reflectivity_, "Reflectivity of the panels");
   msg_->DeclareProperty("tile_vis", tile_vis_, "Visibility of tiles");
@@ -110,11 +111,11 @@ PetBoxMix::PetBoxMix() : GeometryBase(),
 
 }
 
-PetBoxMix::~PetBoxMix()
+PetBoxFBK::~PetBoxFBK()
 {
 }
 
-void PetBoxMix::Construct()
+void PetBoxFBK::Construct()
 {
   // LAB. Volume of air surrounding the detector ///////////////
   G4double lab_size = 1. * m;
@@ -129,7 +130,7 @@ void PetBoxMix::Construct()
   BuildSensors();
 }
 
-void PetBoxMix::BuildBox()
+void PetBoxFBK::BuildBox()
 {
 
   // BOX ///////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ void PetBoxMix::BuildBox()
 
   G4Material *LXe = G4NistManager::Instance()->FindOrBuildMaterial("G4_lXe");
   LXe->SetMaterialPropertiesTable(petopticalprops::LXe(pressure_));
+  //LXe->SetMaterialPropertiesTable(opticalprops::LXe());
   active_logic_ =
       new G4LogicalVolume(active_solid, LXe, "ACTIVE");
 
@@ -279,16 +281,6 @@ void PetBoxMix::BuildBox()
   tile_thickn_ = tile_->GetDimensions().z();
   dist_dice_flange_ = dist_fbk_;
 
-  tile2_ = new TileHamamatsuVUV();
-  tile2_->SetSiPMCells(sipm_cells_);
-  tile2_->SetBoxGeom(1);
-  tile2_->SetTileVisibility(tile_vis_);
-  tile2_->SetTileReflectivity(tile_refl_);
-  
-  tile2_->Construct();
-  tile2_thickn_ = tile2_->GetDimensions().z();
-  dist_dice_flange2_ = dist_ham_vuv_;
-
   /// Teflon block ///
 
   TeflonBlockFBK* teflon_block_fbk = new TeflonBlockFBK();
@@ -298,12 +290,6 @@ void PetBoxMix::BuildBox()
   teflon_block_fbk->Construct();
   G4LogicalVolume* teflon_block_fbk_logic = teflon_block_fbk->GetLogicalVolume();
 
-  TeflonBlockHamamatsu* teflon_block_hama = new TeflonBlockHamamatsu();
-  teflon_block_hama->SetHoleMaterial(LXe);
-  teflon_block_hama->SetIoniSD(ionisd);
-  teflon_block_hama->SetMaxStepSize(max_step_size_);
-  teflon_block_hama->Construct();
-  G4LogicalVolume* teflon_block_hama_logic = teflon_block_hama->GetLogicalVolume();
     
   G4double teflon_block_fbk_thick = teflon_block_fbk->GetTeflonThickness();
   G4double block_z_pos = ih_z_size_/2. + teflon_block_fbk_thick/2.;
@@ -312,10 +298,9 @@ void PetBoxMix::BuildBox()
   
   G4RotationMatrix rot_teflon;
   rot_teflon.rotateY(pi);
-  G4double teflon_block_hama_thick = teflon_block_hama->GetTeflonThickness();
-  block_z_pos = ih_z_size_/2. + teflon_block_hama_thick/2.;
-  new G4PVPlacement(G4Transform3D(rot_teflon, G4ThreeVector(0., 0., block_z_pos)), teflon_block_hama_logic,
-                        "TEFLON_BLOCK_HAMA", active_logic_, false, 1, false);
+  new G4PVPlacement(G4Transform3D(rot_teflon, G4ThreeVector(0., 0., block_z_pos)),
+                    teflon_block_fbk_logic,
+                    "TEFLON_BLOCK_FBK", active_logic_, false, 1, false);
 
 
   // Optical surface for teflon
@@ -325,7 +310,6 @@ void PetBoxMix::BuildBox()
   teflon_optSurf->SetMaterialPropertiesTable(petopticalprops::PTFE());
   
   new G4LogicalSkinSurface("TEFLON_FBK_OPSURF", teflon_block_fbk_logic, teflon_optSurf);
-  new G4LogicalSkinSurface("TEFLON_HAMA_OPSURF", teflon_block_hama_logic, teflon_optSurf);
 
   // Visibilities
   if (visibility_) {
@@ -350,60 +334,61 @@ void PetBoxMix::BuildBox()
     //air_source_tube_inside_box_col.SetForceSolid(true);
     source_tube_inside_box_logic->SetVisAttributes(air_source_tube_inside_box_col);
     G4VisAttributes block_col = nexus::LightBlue();
+    //block_col.SetForceSolid(true);
     teflon_block_fbk_logic->SetVisAttributes(block_col);
-    teflon_block_hama_logic->SetVisAttributes(block_col);
   } else {
     box_logic->SetVisAttributes(G4VisAttributes::GetInvisible());
     active_logic_->SetVisAttributes(G4VisAttributes::GetInvisible());
   }
 }
 
-void PetBoxMix::BuildSensors()
+void PetBoxFBK::BuildSensors()
 {
   /// "Detection" plane ///
 
   G4LogicalVolume* tile_logic = tile_->GetLogicalVolume();
+  G4double tile_size_x = tile_->GetDimensions().x();
+  G4double tile_size_y = tile_->GetDimensions().y();
+  G4double full_row_size = n_tile_columns_ * tile_size_x;
+  G4double full_col_size = n_tile_rows_ * tile_size_y;
+
+  
   G4String vol_name;
   G4int copy_no = 0;
   G4double z_pos = -box_size_/2. + box_thickness_ + dist_dice_flange_ + tile_thickn_/2.;
 
-  // Single tile centered
-  vol_name = "TILE_" + std::to_string(copy_no);
-  new G4PVPlacement(0, G4ThreeVector(0., 0., z_pos),
-                    tile_logic, vol_name, active_logic_, false, copy_no, false);
+  for (G4int j=0; j<n_tile_rows_; j++) {
+    G4double y_pos = full_col_size/2. - tile_size_y/2. - j*tile_size_y;
+    for (G4int i=0; i<n_tile_columns_; i++) {
+      G4double x_pos = full_row_size/2. - tile_size_x/2. - i*tile_size_x;
+      vol_name = "TILE_" + std::to_string(copy_no);
+      new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, z_pos),
+                        tile_logic, vol_name, active_logic_, false, copy_no, false);
+    }
+  }
   
   /// "Coincidence" plane ///
-
-  G4double tile_size_x = tile2_->GetDimensions().x();
-  G4double tile_size_y = tile2_->GetDimensions().y();
-  full_row_size_ = n_tile_columns_ * tile_size_x;
-  full_col_size_ = n_tile_rows_ * tile_size_y;
 
   G4RotationMatrix rot;
   rot.rotateY(pi);
 
   copy_no = 10;
-
-  // 4 tiles
-  G4LogicalVolume* tile2_logic = tile2_->GetLogicalVolume();
-  
-  G4double z_pos2 = -box_size_/2. + box_thickness_ + dist_dice_flange2_ + tile2_thickn_/2.;
   
   for (G4int j=0; j<n_tile_rows_; j++) {
-    G4double y_pos = full_col_size_/2. - tile_size_y/2. - j*tile_size_y;
+    G4double y_pos = full_col_size/2. - tile_size_y/2. - j*tile_size_y;
     for (G4int i=0; i<n_tile_columns_; i++) {
-      G4double x_pos = full_row_size_/2. - tile_size_x/2. - i*tile_size_x;
+      G4double x_pos = full_row_size/2. - tile_size_x/2. - i*tile_size_x;
       vol_name = "TILE_" + std::to_string(copy_no);
       
-      new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(x_pos, y_pos, -z_pos2)),
-                        tile2_logic, vol_name, active_logic_, false, copy_no, false);
+      new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(x_pos, y_pos, -z_pos)),
+                        tile_logic, vol_name, active_logic_, false, copy_no, false);
       copy_no += 1;
     }
   }
 
 }
 
-G4ThreeVector PetBoxMix::GenerateVertex(const G4String &region) const
+G4ThreeVector PetBoxFBK::GenerateVertex(const G4String &region) const
 {
   G4ThreeVector vertex(0., 0., 0.);
 
@@ -421,7 +406,7 @@ G4ThreeVector PetBoxMix::GenerateVertex(const G4String &region) const
     }
   else
     {
-      G4Exception("[PetBoxMix]", "GenerateVertex()", FatalException,
+      G4Exception("[PetBoxFBK]", "GenerateVertex()", FatalException,
                   "Unknown vertex generation region!");
     }
   return vertex;
