@@ -74,7 +74,8 @@ PetBoxMix::PetBoxMix() : GeometryBase(),
                    v_l_panel_z_size_(46.7 * mm),
                    dist_ham_vuv_(18.6 * mm),
                    dist_ham_blue_(19.35 * mm),
-                   dist_fbk_(21.05 * mm),
+                   // dist_fbk_(21.05 * mm),
+                   dist_fbk_(18.6 * mm),
                    panel_sipm_xy_size_(66. * mm),
                    dist_sipms_panel_sipms_(0.3 * mm),
                    wls_depth_(0.001 * mm),
@@ -279,16 +280,6 @@ void PetBoxMix::BuildBox()
   tile_thickn_ = tile_->GetDimensions().z();
   dist_dice_flange_ = dist_fbk_;
 
-  tile2_ = new TileHamamatsuVUV();
-  tile2_->SetSiPMCells(sipm_cells_);
-  tile2_->SetBoxGeom(1);
-  tile2_->SetTileVisibility(tile_vis_);
-  tile2_->SetTileReflectivity(tile_refl_);
-
-  tile2_->Construct();
-  tile2_thickn_ = tile2_->GetDimensions().z();
-  dist_dice_flange2_ = dist_ham_vuv_;
-
   /// Teflon block ///
 
   TeflonBlockFBK* teflon_block_fbk = new TeflonBlockFBK();
@@ -309,16 +300,16 @@ void PetBoxMix::BuildBox()
 
   G4double teflon_block_fbk_thick = teflon_block_fbk->GetTeflonThickness();
   G4double block_z_pos = ih_z_size_/2. + teflon_block_fbk_thick/2.;
-  //new G4PVPlacement(0, G4ThreeVector(0., 0., -block_z_pos), teflon_block_fbk_logic,
-  //                  "TEFLON_BLOCK_FBK", active_logic_, false, 0, false);
+  new G4PVPlacement(0, G4ThreeVector(0., 0., -block_z_pos), teflon_block_fbk_logic,
+                    "TEFLON_BLOCK_FBK", active_logic_, false, 0, false);
 
 
   G4RotationMatrix rot_teflon;
   rot_teflon.rotateY(pi);
   //G4double teflon_block_hama_thick = teflon_block_hama->GetTeflonThickness();
   //block_z_pos = ih_z_size_/2. + teflon_block_hama_thick/2.;
-  //new G4PVPlacement(G4Transform3D(rot_teflon, G4ThreeVector(0., 0., block_z_pos)), teflon_block_fbk_logic,
-  //                      "TEFLON_BLOCK_HAMA", active_logic_, false, 1, false);
+  new G4PVPlacement(G4Transform3D(rot_teflon, G4ThreeVector(0., 0., block_z_pos)), teflon_block_fbk_logic,
+                        "TEFLON_BLOCK_FBK", active_logic_, false, 1, false);
 
 
   // Optical surface for teflon

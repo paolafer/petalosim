@@ -89,6 +89,14 @@ G4bool ToFSD::ProcessHits(G4Step *step, G4TouchableHistory *)
 
 G4int ToFSD::FindID(const G4VTouchable *touchable)
 {
+  // This works only with FBK in PETit, and SiPM numbering is the following:
+  // 100, 101, ..., 163
+  // 200, 201, ..., 263
+  // ...
+  // 800, 801, ..., 863
+  // SiPMs from 100 to 463 belong to "detection" plane,
+  // the others to "coincidence" plane.
+
   G4int snsid = -1;
   if (box_geom_ == 1) {
     G4int motherid = touchable->GetCopyNumber(mother_depth_);
