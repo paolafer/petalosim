@@ -75,7 +75,8 @@ PetBoxFBK::PetBoxFBK() : GeometryBase(),
                    v_l_panel_z_size_(46.7 * mm),
                    dist_ham_vuv_(18.6 * mm),
                    dist_ham_blue_(19.35 * mm),
-                   dist_fbk_(21.05 * mm),
+//dist_fbk_(21.05 * mm),
+                   dist_fbk_(18.6 * mm),
                    panel_sipm_xy_size_(66. * mm),
                    dist_sipms_panel_sipms_(0.3 * mm),
                    wls_depth_(0.001 * mm),
@@ -354,7 +355,7 @@ void PetBoxFBK::BuildSensors()
 
   
   G4String vol_name;
-  G4int copy_no = 0;
+  G4int copy_no = 1;
   G4double z_pos = -box_size_/2. + box_thickness_ + dist_dice_flange_ + tile_thickn_/2.;
 
   for (G4int j=0; j<n_tile_rows_; j++) {
@@ -364,6 +365,7 @@ void PetBoxFBK::BuildSensors()
       vol_name = "TILE_" + std::to_string(copy_no);
       new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, z_pos),
                         tile_logic, vol_name, active_logic_, false, copy_no, false);
+      copy_no += 1;
     }
   }
   
@@ -371,8 +373,6 @@ void PetBoxFBK::BuildSensors()
 
   G4RotationMatrix rot;
   rot.rotateY(pi);
-
-  copy_no = 10;
   
   for (G4int j=0; j<n_tile_rows_; j++) {
     G4double y_pos = full_col_size/2. - tile_size_y/2. - j*tile_size_y;
