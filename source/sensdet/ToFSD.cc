@@ -89,37 +89,24 @@ G4bool ToFSD::ProcessHits(G4Step *step, G4TouchableHistory *)
 
 G4int ToFSD::FindID(const G4VTouchable *touchable)
 {
-  G4int snsid = touchable->GetCopyNumber(sensor_depth_);
-  if (naming_order_ != 0)
-  {
-    G4int motherid = touchable->GetCopyNumber(mother_depth_);
-    snsid = naming_order_ * motherid + snsid;
-  }
-  if (box_geom_ == 1) { // Hamamatsu & FBK
-    std::vector<G4int> init_ids_d({0, 4, 40, 44});
-    std::vector<G4int> init_ids_c({100, 104, 140, 144});
+  G4int snsid = -1;
+  if (box_geom_ == 1) {
     G4int motherid = touchable->GetCopyNumber(mother_depth_);
 
-    G4int first_id;
     if (sipm_cells_ == 1) {// each cell is an individual photosensor
       G4int pxlid         = touchable->GetCopyNumber(sensor_depth_);
       G4int grandmotherid = touchable->GetCopyNumber(grandmother_depth_);
-      if (grandmotherid < 10) {
-        first_id = (init_ids_d)[grandmotherid];
-      } else {
-        first_id = (init_ids_c)[grandmotherid - 10];
-      }
-      snsid = first_id + motherid; // this is the SiPM ID
 
-      snsid = snsid * 10000 + pxlid;
+      snsid = naming_order_ * grandmotherid + motherid; // this is the SiPM ID
+      snsid = snsid * 10000 + pxlid; // this is the pixel ID
     } else {
-      if (motherid < 10) {
-        first_id = (init_ids_d)[motherid];
-      } else {
-        first_id = (init_ids_c)[motherid - 10];
-      }
-      snsid = first_id + snsid;
+      snsid = touchable->GetCopyNumber(sensor_depth_);
+      snsid = naming_order_ * motherid + snsid;
     }
+
+  } else {
+    G4Exception("[TofSD]", "FindID()", FatalException,
+                  "This branch works only for PETit geometries!");
   }
   return snsid;
 }

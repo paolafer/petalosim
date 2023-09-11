@@ -83,7 +83,7 @@ void PixelFBKVUV::Construct()
     sipmsd->SetDetectorVolumeDepth(0);
     sipmsd->SetMotherVolumeDepth(1);
     sipmsd->SetGrandMotherVolumeDepth(2);
-    sipmsd->SetDetectorNamingOrder(0);
+    sipmsd->SetDetectorNamingOrder(100);
     sipmsd->SetBoxGeom(1);
     sipmsd->SetSiPMCells(1);
 

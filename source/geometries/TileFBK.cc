@@ -72,9 +72,9 @@ void TileFBK::Construct()
     sipm_sat_->Construct();
     sipm_dim = sipm_sat_->GetDimensions();
   } else {
-
     sipm_->SetSensorDepth(1);
     sipm_->SetMotherDepth(2);
+    sipm_->SetNamingOrder(100);
     sipm_->SetBoxGeom(GetBoxGeom());
     sipm_->SetVisibility(GetTileVisibility());
     sipm_->SetPDE(GetPDE());
@@ -122,9 +122,11 @@ void TileFBK::Construct()
   }
   */
 
+  G4int copy_no = 0;
+
   for (int j=0; j<n_rows_; j++) {
     for (int i = 0; i < n_columns_; i++) {
-    G4int copy_no = (j + 1) * 10 + i + 1;
+      //G4int copy_no = (j + 1) * 10 + i + 1;
 
     G4double x_pos = -tile_x_ / 2. + offset_x + sipm_dim.x() / 2. + i * sipm_pitch_;
     G4double y_pos = tile_y_ / 2. - offset_y - sipm_dim.y() / 2. - j * sipm_pitch_;
@@ -132,6 +134,7 @@ void TileFBK::Construct()
     G4String vol_name = "SiPMFBKVUV_" + std::to_string(copy_no);
     new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, z_pos),
                       sipm_logic, vol_name, tile_logic, false, copy_no, false);
+    copy_no++;
     }
   }
 
