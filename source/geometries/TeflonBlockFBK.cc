@@ -18,7 +18,7 @@
 #include <G4UserLimits.hh>
 #include <G4VisAttributes.hh>
 
-TeflonBlockFBK::TeflonBlockFBK(): teflon_block_thick_(35.50 * mm),
+TeflonBlockFBK::TeflonBlockFBK(): teflon_block_thick_(35.*mm),
                                   max_step_size_(1.*mm)
 {
 }

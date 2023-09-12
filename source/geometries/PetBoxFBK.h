@@ -97,6 +97,8 @@ private:
   SpherePointSampler* source_gen_;
 
   G4bool sipm_cells_;
+
+  G4double end_of_teflon_z_;
 };
 
 #endif

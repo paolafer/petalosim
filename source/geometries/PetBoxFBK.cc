@@ -293,7 +293,7 @@ void PetBoxFBK::BuildBox()
 
     
   G4double teflon_block_fbk_thick = teflon_block_fbk->GetTeflonThickness();
-  G4double block_z_pos = ih_z_size_/2. + teflon_block_fbk_thick/2.;
+  G4double block_z_pos = ih_z_size_/2. + 0.25*mm + teflon_block_fbk_thick/2.;
   new G4PVPlacement(0, G4ThreeVector(0., 0., -block_z_pos), teflon_block_fbk_logic,
                     "TEFLON_BLOCK_FBK", active_logic_, false, 0, false);
   
@@ -302,6 +302,8 @@ void PetBoxFBK::BuildBox()
   new G4PVPlacement(G4Transform3D(rot_teflon, G4ThreeVector(0., 0., block_z_pos)),
                     teflon_block_fbk_logic,
                     "TEFLON_BLOCK_FBK", active_logic_, false, 1, false);
+
+  end_of_teflon_z_ = block_z_pos + teflon_block_fbk_thick/2.;
 
 
   // Optical surface for teflon
@@ -356,14 +358,15 @@ void PetBoxFBK::BuildSensors()
   
   G4String vol_name;
   G4int copy_no = 1;
-  G4double z_pos = -box_size_/2. + box_thickness_ + dist_dice_flange_ + tile_thickn_/2.;
+  //G4double z_pos = -box_size_/2. + box_thickness_ + dist_dice_flange_ + tile_thickn_/2.;
+  G4double z_pos = end_of_teflon_z_ + 0.5*mm + tile_thickn_/2.;
 
   for (G4int j=0; j<n_tile_rows_; j++) {
     G4double y_pos = full_col_size/2. - tile_size_y/2. - j*tile_size_y;
     for (G4int i=0; i<n_tile_columns_; i++) {
       G4double x_pos = full_row_size/2. - tile_size_x/2. - i*tile_size_x;
       vol_name = "TILE_" + std::to_string(copy_no);
-      new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, z_pos),
+      new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, -z_pos),
                         tile_logic, vol_name, active_logic_, false, copy_no, false);
       copy_no += 1;
     }
@@ -380,7 +383,7 @@ void PetBoxFBK::BuildSensors()
       G4double x_pos = full_row_size/2. - tile_size_x/2. - i*tile_size_x;
       vol_name = "TILE_" + std::to_string(copy_no);
       
-      new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(x_pos, y_pos, -z_pos)),
+      new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(x_pos, y_pos, z_pos)),
                         tile_logic, vol_name, active_logic_, false, copy_no, false);
       copy_no += 1;
     }
