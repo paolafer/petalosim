@@ -291,12 +291,12 @@ void PetBoxFBK::BuildBox()
   teflon_block_fbk->Construct();
   G4LogicalVolume* teflon_block_fbk_logic = teflon_block_fbk->GetLogicalVolume();
 
-    
+
   G4double teflon_block_fbk_thick = teflon_block_fbk->GetTeflonThickness();
   G4double block_z_pos = ih_z_size_/2. + 0.25*mm + teflon_block_fbk_thick/2.;
   new G4PVPlacement(0, G4ThreeVector(0., 0., -block_z_pos), teflon_block_fbk_logic,
                     "TEFLON_BLOCK_FBK", active_logic_, false, 0, false);
-  
+
   G4RotationMatrix rot_teflon;
   rot_teflon.rotateY(pi);
   new G4PVPlacement(G4Transform3D(rot_teflon, G4ThreeVector(0., 0., block_z_pos)),
@@ -309,9 +309,9 @@ void PetBoxFBK::BuildBox()
   // Optical surface for teflon
   G4OpticalSurface* teflon_optSurf =
     new G4OpticalSurface("TEFLON_OPSURF", unified, ground, dielectric_metal);
-  
+
   teflon_optSurf->SetMaterialPropertiesTable(petopticalprops::PTFE());
-  
+
   new G4LogicalSkinSurface("TEFLON_FBK_OPSURF", teflon_block_fbk_logic, teflon_optSurf);
 
   // Visibilities
@@ -347,47 +347,77 @@ void PetBoxFBK::BuildBox()
 
 void PetBoxFBK::BuildSensors()
 {
-  /// "Detection" plane ///
-
   G4LogicalVolume* tile_logic = tile_->GetLogicalVolume();
   G4double tile_size_x = tile_->GetDimensions().x();
   G4double tile_size_y = tile_->GetDimensions().y();
-  G4double full_row_size = n_tile_columns_ * tile_size_x;
-  G4double full_col_size = n_tile_rows_ * tile_size_y;
 
-  
-  G4String vol_name;
-  G4int copy_no = 1;
-  //G4double z_pos = -box_size_/2. + box_thickness_ + dist_dice_flange_ + tile_thickn_/2.;
+  G4double offset_x_left  = 0.08*mm;
+  G4double offset_x_right = 0.38*mm;
+
   G4double z_pos = end_of_teflon_z_ + 0.5*mm + tile_thickn_/2.;
 
-  for (G4int j=0; j<n_tile_rows_; j++) {
-    G4double y_pos = full_col_size/2. - tile_size_y/2. - j*tile_size_y;
-    for (G4int i=0; i<n_tile_columns_; i++) {
-      G4double x_pos = -full_row_size/2. + tile_size_x/2. + i*tile_size_x;
-      vol_name = "TILE_" + std::to_string(copy_no);
-      new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, -z_pos),
-                        tile_logic, vol_name, active_logic_, false, copy_no, false);
-      copy_no += 1;
-    }
-  }
-  
+  // Place tiles one by one because they're not symmetric w.r.t (0, 0)
+
+  /// "Detection" plane ///
+
+  // 100, 101, ...
+  G4double x_pos1 = - tile_size_x/2. - offset_x_left;
+  G4double y_pos1 = tile_size_y/2.;
+  G4int copy_no = 1;
+  G4String vol_name = "TILE_" + std::to_string(copy_no);
+  new G4PVPlacement(0, G4ThreeVector(x_pos1, y_pos1, -z_pos),
+                    tile_logic, vol_name, active_logic_, false, copy_no, false);
+
+  // 200, 201, ...
+  G4double x_pos2 = offset_x_right + tile_size_x/2.;
+  copy_no = 2;
+  vol_name = "TILE_" + std::to_string(copy_no);
+  new G4PVPlacement(0, G4ThreeVector(x_pos2, y_pos1, -z_pos),
+                    tile_logic, vol_name, active_logic_, false, copy_no, false);
+
+  // 300, 301, ...
+  G4double y_pos3 = - tile_size_y/2.;
+  copy_no = 3;
+  vol_name = "TILE_" + std::to_string(copy_no);
+  new G4PVPlacement(0, G4ThreeVector(x_pos1, y_pos3, -z_pos),
+                    tile_logic, vol_name, active_logic_, false, copy_no, false);
+
+  // 400, 401, ...
+  copy_no = 4;
+  vol_name = "TILE_" + std::to_string(copy_no);
+  new G4PVPlacement(0, G4ThreeVector(x_pos2, y_pos3, -z_pos),
+                    tile_logic, vol_name, active_logic_, false, copy_no, false);
+
+
   /// "Coincidence" plane ///
 
   G4RotationMatrix rot;
   rot.rotateY(pi);
-  
-  for (G4int j=0; j<n_tile_rows_; j++) {
-    G4double y_pos = full_col_size/2. - tile_size_y/2. - j*tile_size_y;
-    for (G4int i=0; i<n_tile_columns_; i++) {
-      G4double x_pos = full_row_size/2. - tile_size_x/2. - i*tile_size_x;
-      vol_name = "TILE_" + std::to_string(copy_no);
-      
-      new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(x_pos, y_pos, z_pos)),
-                        tile_logic, vol_name, active_logic_, false, copy_no, false);
-      copy_no += 1;
-    }
-  }
+
+  // 500, 501, ...
+  copy_no = 5;
+  vol_name = "TILE_" + std::to_string(copy_no);
+  new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(-x_pos1, y_pos1, z_pos)),
+                    tile_logic, vol_name, active_logic_, false, copy_no, false);
+
+  // 600, 601, ...
+  copy_no = 6;
+  vol_name = "TILE_" + std::to_string(copy_no);
+  new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(-x_pos2, y_pos1, z_pos)),
+                    tile_logic, vol_name, active_logic_, false, copy_no, false);
+
+  // 700, 701, ...
+  copy_no = 7;
+  vol_name = "TILE_" + std::to_string(copy_no);
+  new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(-x_pos1, y_pos3, z_pos)),
+                    tile_logic, vol_name, active_logic_, false, copy_no, false);
+
+  // 800, 801, ...
+  copy_no = 8;
+  vol_name = "TILE_" + std::to_string(copy_no);
+  new G4PVPlacement(G4Transform3D(rot, G4ThreeVector(-x_pos2, y_pos3, z_pos)),
+                    tile_logic, vol_name, active_logic_, false, copy_no, false);
+
 
 }
 

@@ -54,11 +54,12 @@ void TeflonBlockFBK::Construct()
 
   G4double holes_pos_z = -teflon_block_thick_/2. + teflon_holes_depth/2.;
 
-  G4double offset_x = 5.20 * mm;
-  G4double offset_y = 5.20 * mm;
+  G4double offset_x = 5.60 * mm;
+  G4double offset_y = 5.45 * mm;
 
-  G4double fill_between_holes = 1.*mm;
-  G4double fill_between_holes_large = 2.60*mm;
+  G4double fill_between_holes  = 1.00 * mm;
+  G4double fill_between_quad_h = 2.45 * mm;
+  G4double fill_between_quad_v = 2.00 * mm;
 
   G4int copy_no = 0;
   G4double hole_pos_x = 0;
@@ -68,16 +69,19 @@ void TeflonBlockFBK::Construct()
     for (int j = 0; j < 8; j++) {
       if (j < 4) {
         hole_pos_x =
-          -teflon_block_xy / 2. + offset_x + teflon_holes_xy/2. + j * (teflon_holes_xy + fill_between_holes);
+          -teflon_block_xy/2. + offset_x + teflon_holes_xy/2. + j*(teflon_holes_xy + fill_between_holes);
       } else {
         hole_pos_x =
-          fill_between_holes_large/2. + teflon_holes_xy/2. + (j-4) * (teflon_holes_xy + fill_between_holes);
+          -teflon_block_xy/2. + offset_x + teflon_holes_xy + 3*(teflon_holes_xy + fill_between_holes) +
+          fill_between_quad_h + teflon_holes_xy/2. + (j-4) * (teflon_holes_xy + fill_between_holes);
       }
       if (i < 4) {
         hole_pos_y =
-          teflon_block_xy / 2. - offset_y - teflon_holes_xy/2. - i * (teflon_holes_xy + fill_between_holes);
+          teflon_block_xy/2. - offset_y - teflon_holes_xy/2. - i*(teflon_holes_xy + fill_between_holes);
       } else {
-        hole_pos_y = -fill_between_holes_large/2. - teflon_holes_xy/2. - (i-4) * (teflon_holes_xy + fill_between_holes);
+        hole_pos_y =
+          teflon_block_xy/2. - offset_y - teflon_holes_xy - 3*(teflon_holes_xy + fill_between_holes)
+          -fill_between_quad_v - teflon_holes_xy/2. - (i-4)*(teflon_holes_xy + fill_between_holes);
       }
       new G4PVPlacement(0, G4ThreeVector(hole_pos_x, hole_pos_y, holes_pos_z),
                         teflon_hole_logic, "ACTIVE", teflon_block_logic, false, copy_no, false);
