@@ -364,7 +364,7 @@ void PetBoxFBK::BuildSensors()
   for (G4int j=0; j<n_tile_rows_; j++) {
     G4double y_pos = full_col_size/2. - tile_size_y/2. - j*tile_size_y;
     for (G4int i=0; i<n_tile_columns_; i++) {
-      G4double x_pos = full_row_size/2. - tile_size_x/2. - i*tile_size_x;
+      G4double x_pos = -full_row_size/2. + tile_size_x/2. + i*tile_size_x;
       vol_name = "TILE_" + std::to_string(copy_no);
       new G4PVPlacement(0, G4ThreeVector(x_pos, y_pos, -z_pos),
                         tile_logic, vol_name, active_logic_, false, copy_no, false);
