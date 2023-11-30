@@ -115,7 +115,7 @@ G4int ToFSD::FindID(const G4VTouchable* touchable)
       G4int grandmotherid = touchable->GetCopyNumber(grandmother_depth_);
       G4int first_id = (init_ids)[grandmotherid];
       snsid = first_id + motherid; // this is the SiPM ID
-      snsid = snsid * 10000 + pxlid; // this is the ID of each microcell
+      snsid = snsid * 100000 + pxlid; // this is the ID of each microcell
     } else {
       G4int first_id = (init_ids)[motherid];
       snsid = first_id + snsid;

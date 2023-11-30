@@ -77,8 +77,8 @@ void TileHamamatsuVUV::Construct()
 
   if (GetSiPMCells()) {
     sipm_cells.SetDim(G4ThreeVector(5.95 * mm, 5.85 * mm, 0.35 * mm));
-    sipm_cells.SetNumbOfMicroCells(6162);
-    sipm_cells.SetPitch(0.075 * mm);
+    sipm_cells.SetNumbOfMicroCells(13804);
+    sipm_cells.SetPitch(0.050 * mm);
     sipm_cells.SetMicroCell("MicroCellHmtsuVUV");
     sipm_cells.Construct();
     sipm_dim = sipm_cells.GetDim();
