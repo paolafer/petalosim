@@ -64,8 +64,9 @@ void SiPMCells::Construct()
   G4LogicalVolume* pxl_logic = pxl_->GetLogicalVolume();
   G4double pxl_depth = pxl_->GetDimensions().z();
   
-  G4int n_rows    =  sipm_dim.x() / pitch_;
-  G4int n_columns =  sipm_dim.y() / pitch_;
+  G4int n_rows    =  sipm_dim.x() / pitch_ + 1.e-10;
+  G4int n_columns =  sipm_dim.y() / pitch_ + 1.e-10;
+
   assert(n_rows*n_columns == n_microcells_);
 
   G4double x = 0;
