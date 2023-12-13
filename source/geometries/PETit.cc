@@ -11,7 +11,7 @@
 #include "TileHamamatsuVUV.h"
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
-#include "TeflonBlockHamamatsu.h"
+#include "TeflonBlockHamamatsu2x2.h"
 #include "PetaloUtils.h"
 #include "PetIonizationSD.h"
 
@@ -117,7 +117,7 @@ void PETit::BuildBox()
   active_logic_ = box_->GetActiveVolume();
   G4double ih_z_size = box_->GetHatZSize();
 
-  TeflonBlockHamamatsu teflon_block_hama = TeflonBlockHamamatsu();
+  TeflonBlockHamamatsu2x2 teflon_block_hama = TeflonBlockHamamatsu2x2();
   teflon_block_hama.SetHoleMaterial(LXe);
   teflon_block_hama.SetIoniSD(ionisd);
   teflon_block_hama.SetMaxStepSize(max_step_size_);
