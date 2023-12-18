@@ -1,14 +1,14 @@
 // ----------------------------------------------------------------------------
-// petalosim | TeflonBlockHamamatsu3x3.h
+// petalosim | TeflonBlockHamamatsu4x4.h
 //
 // Teflon block used with the Hamamatsu VUV tiles,
-// with 9 SiPMs coupled to 1 hole and 30 mm of length.
+// with 16 SiPMs coupled to 1 hole and 30 mm of length.
 //
 // The PETALO Collaboration
 // ----------------------------------------------------------------------------
 
-#ifndef TEFLON_HAMA_3x3_H
-#define TEFLON_HAMA_3x3_H
+#ifndef TEFLON_HAMA_4x4_H
+#define TEFLON_HAMA_4x4_H
 
 #include "nexus/GeometryBase.h"
 
@@ -20,13 +20,13 @@ class IonizationSD;
 
 using namespace nexus;
 
-class TeflonBlockHamamatsu3x3: public GeometryBase
+class TeflonBlockHamamatsu4x4: public GeometryBase
 {
 public:
   // Constructor
-  TeflonBlockHamamatsu3x3();
+  TeflonBlockHamamatsu4x4();
   //Destructor
-  ~TeflonBlockHamamatsu3x3();
+  ~TeflonBlockHamamatsu4x4();
 
   void Construct();
 
@@ -46,9 +46,9 @@ public:
 
 };
 
-inline void TeflonBlockHamamatsu3x3::SetHoleMaterial(G4Material* mat) {mat_ = mat;}
-inline void TeflonBlockHamamatsu3x3::SetIoniSD(IonizationSD* ionisd) {ionisd_ = ionisd;}
-inline void TeflonBlockHamamatsu3x3::SetMaxStepSize(G4double step_size) {max_step_size_ = step_size;}
-inline G4double TeflonBlockHamamatsu3x3::GetTeflonThickness() const {return teflon_block_thick_;}
+inline void TeflonBlockHamamatsu4x4::SetHoleMaterial(G4Material* mat) {mat_ = mat;}
+inline void TeflonBlockHamamatsu4x4::SetIoniSD(IonizationSD* ionisd) {ionisd_ = ionisd;}
+inline void TeflonBlockHamamatsu4x4::SetMaxStepSize(G4double step_size) {max_step_size_ = step_size;}
+inline G4double TeflonBlockHamamatsu4x4::GetTeflonThickness() const {return teflon_block_thick_;}
 
 #endif
