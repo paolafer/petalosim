@@ -8,8 +8,7 @@
 // ----------------------------------------------------------------------------
 
 #include "TeflonBlockHamamatsu2x2.h"
-
-#include "nexus/IonizationSD.h"
+#include "PetIonizationSD.h"
 
 #include <G4Box.hh>
 #include <G4LogicalVolume.hh>
