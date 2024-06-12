@@ -11,7 +11,7 @@
 #include "TileHamamatsuVUV.h"
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
-#include "TeflonBlockHamamatsu4x4.h"
+#include "TeflonBlockHamamatsu2x2_12mmL.h"
 #include "PetaloUtils.h"
 #include "PetIonizationSD.h"
 
@@ -117,7 +117,7 @@ void PETit::BuildBox()
   active_logic_ = box_->GetActiveVolume();
   G4double ih_z_size = box_->GetHatZSize();
 
-  TeflonBlockHamamatsu4x4 teflon_block_hama = TeflonBlockHamamatsu4x4();
+  TeflonBlockHamamatsu2x2_12mmL teflon_block_hama = TeflonBlockHamamatsu2x2_12mmL();
   teflon_block_hama.SetHoleMaterial(LXe);
   teflon_block_hama.SetIoniSD(ionisd);
   teflon_block_hama.SetMaxStepSize(max_step_size_);
@@ -203,7 +203,6 @@ void PETit::BuildSensors()
 G4ThreeVector PETit::GenerateVertex(const G4String &region) const
 {
   G4ThreeVector vertex(0., 0., 0.);
-
   if (region == "CENTER") {
     return vertex;
   } else if (region == "AD_HOC") {

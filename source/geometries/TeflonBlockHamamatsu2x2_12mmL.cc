@@ -1,13 +1,13 @@
 // ----------------------------------------------------------------------------
-// petalosim | TeflonBlockHamamatsu2x2.h
+// petalosim | TeflonBlockHamamatsu2x2_12mmL.h
 //
 // Teflon block used with the Hamamatsu VUV tiles,
-// with 4 SiPMs coupled to 1 hole and 30 mm of length.
+// with 4 SiPMs coupled to 1 hole and 12 mm of length.
 //
 // The PETALO Collaboration
 // ----------------------------------------------------------------------------
 
-#include "TeflonBlockHamamatsu2x2.h"
+#include "TeflonBlockHamamatsu2x2_12mmL.h"
 #include "PetIonizationSD.h"
 
 #include <G4Box.hh>
@@ -17,17 +17,17 @@
 #include <G4Material.hh>
 #include <G4UserLimits.hh>
 
-TeflonBlockHamamatsu2x2::TeflonBlockHamamatsu2x2(): teflon_block_thick_(35.75 * mm),
+TeflonBlockHamamatsu2x2_12mmL::TeflonBlockHamamatsu2x2_12mmL(): teflon_block_thick_(35.75 * mm),
                                                     max_step_size_(1.*mm)
 {
 }
 
-TeflonBlockHamamatsu2x2::~TeflonBlockHamamatsu2x2()
+TeflonBlockHamamatsu2x2_12mmL::~TeflonBlockHamamatsu2x2_12mmL()
 {
 }
 
 
-void TeflonBlockHamamatsu2x2::Construct()
+void TeflonBlockHamamatsu2x2_12mmL::Construct()
 {
   G4double teflon_block_xy = 67 * mm;
   
@@ -40,7 +40,7 @@ void TeflonBlockHamamatsu2x2::Construct()
   G4double dist_between_holes_xy = 1.75 * mm;
 
   G4double teflon_holes_xy    = 5.75*2 * mm + dist_between_holes_xy;
-  G4double teflon_holes_depth = 30    * mm;
+  G4double teflon_holes_depth = 12     * mm;
   
   G4Box* teflon_block_solid =
     new G4Box("TEFLON_BLOCK", teflon_block_xy/2., teflon_block_xy/2., teflon_block_thick_/2.);
