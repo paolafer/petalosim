@@ -2,7 +2,7 @@
 // petalosim | TeflonBlockHamamatsu3x3.h
 //
 // Teflon block used with the Hamamatsu VUV tiles,
-// with 49SiPMs coupled to 1 hole and 30 mm of length.
+// with 9SiPMs coupled to 1 hole and configurable length.
 //
 // The PETALO Collaboration
 // ----------------------------------------------------------------------------
@@ -18,6 +18,7 @@
 #include <G4UserLimits.hh>
 
 TeflonBlockHamamatsu3x3::TeflonBlockHamamatsu3x3(): teflon_block_thick_(35.75 * mm),
+                                                    hole_length_(5*mm),
                                                     max_step_size_(1.*mm)
 {
 }
@@ -41,7 +42,7 @@ void TeflonBlockHamamatsu3x3::Construct()
   G4double dist_between_holes_xy = 1.75 * mm;
 
   G4double teflon_holes_true_xy = 3*teflon_holes_xy + 2*dist_between_holes_xy;
-  G4double teflon_holes_depth   = 30 * mm;
+  G4double teflon_holes_depth   = hole_length_;
 
   G4Box* teflon_block_solid =
     new G4Box("TEFLON_BLOCK", teflon_block_xy/2., teflon_block_xy/2., teflon_block_thick_/2.);

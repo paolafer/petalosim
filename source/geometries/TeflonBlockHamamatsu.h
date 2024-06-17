@@ -30,6 +30,7 @@ public:
   void SetHoleMaterial(G4Material* mat);
   void SetIoniSD(PetIonizationSD* ionisd);
   void SetMaxStepSize(G4double step_size);
+  void SetHoleLength(G4double hole_length);
 
   G4double GetTeflonThickness() const;
 
@@ -37,7 +38,7 @@ public:
 
   G4Material* mat_;
   PetIonizationSD* ionisd_;
-  G4double teflon_block_thick_;
+  G4double teflon_block_thick_, hole_length_;
   G4double max_step_size_;
 
 
@@ -46,6 +47,7 @@ public:
 inline void TeflonBlockHamamatsu::SetHoleMaterial(G4Material* mat) {mat_ = mat;}
 inline void TeflonBlockHamamatsu::SetIoniSD(PetIonizationSD* ionisd) {ionisd_ = ionisd;}
 inline void TeflonBlockHamamatsu::SetMaxStepSize(G4double step_size) {max_step_size_ = step_size;}
+inline void TeflonBlockHamamatsu::SetHoleLength(G4double hole_length) {hole_length_ = hole_length;}
 inline G4double TeflonBlockHamamatsu::GetTeflonThickness() const {return teflon_block_thick_;}
 
 #endif

@@ -48,7 +48,7 @@ private:
   G4ThreeVector specific_vertex_;
 
   G4bool sipm_cells_;
-  G4double max_step_size_, pressure_;
+  G4double max_step_size_, pressure_, teflon_hole_length_;
 
   /// Messenger for the definition of control commands
   G4GenericMessenger* msg_;

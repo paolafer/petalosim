@@ -11,7 +11,7 @@
 #include "TileHamamatsuVUV.h"
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
-#include "TeflonBlockHamamatsu4x4.h"
+#include "TeflonBlockHamamatsu.h"
 #include "PetaloUtils.h"
 #include "PetIonizationSD.h"
 
@@ -45,7 +45,8 @@ PETit::PETit() : GeometryBase(),
                  specific_vertex_{},
                  sipm_cells_(false),
                  max_step_size_(1. * mm),
-                 pressure_(1 * bar)
+                 pressure_(1 * bar),
+                 teflon_hole_length_(5*mm)
 
 {
   // Messenger
@@ -68,6 +69,13 @@ PETit::PETit() : GeometryBase(),
   press_cmd.SetUnitCategory("Pressure");
   press_cmd.SetParameterName("pressure", false);
   press_cmd.SetRange("pressure>0.");
+
+  G4GenericMessenger::Command& hole_length_cmd =
+    msg_->DeclareProperty("teflon_hole_length", teflon_hole_length_,
+                          "Length of teflon holes (if present)");
+  hole_length_cmd.SetUnitCategory("Length");
+  hole_length_cmd.SetParameterName("length", false);
+  hole_length_cmd.SetRange("length>0.");
 
 
 
@@ -117,7 +125,8 @@ void PETit::BuildBox()
   active_logic_ = box_->GetActiveVolume();
   G4double ih_z_size = box_->GetHatZSize();
 
-  TeflonBlockHamamatsu4x4 teflon_block_hama = TeflonBlockHamamatsu4x4();
+  TeflonBlockHamamatsu teflon_block_hama = TeflonBlockHamamatsu();
+  teflon_block_hama.SetHoleLength(teflon_hole_length_);
   teflon_block_hama.SetHoleMaterial(LXe);
   teflon_block_hama.SetIoniSD(ionisd);
   teflon_block_hama.SetMaxStepSize(max_step_size_);

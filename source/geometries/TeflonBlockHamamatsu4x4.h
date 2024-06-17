@@ -2,7 +2,7 @@
 // petalosim | TeflonBlockHamamatsu4x4.h
 //
 // Teflon block used with the Hamamatsu VUV tiles,
-// with 16 SiPMs coupled to 1 hole and 30 mm of length.
+// with 16 SiPMs coupled to 1 hole and configurable length.
 //
 // The PETALO Collaboration
 // ----------------------------------------------------------------------------
@@ -30,6 +30,7 @@ public:
   void SetHoleMaterial(G4Material* mat);
   void SetIoniSD(PetIonizationSD* ionisd);
   void SetMaxStepSize(G4double step_size);
+  void SetHoleLength(G4double hole_length);
 
   G4double GetTeflonThickness() const;
 
@@ -37,7 +38,7 @@ public:
 
   G4Material* mat_;
   PetIonizationSD* ionisd_;
-  G4double teflon_block_thick_;
+  G4double teflon_block_thick_, hole_length_;
   G4double max_step_size_;
 
 
@@ -46,6 +47,7 @@ public:
 inline void TeflonBlockHamamatsu4x4::SetHoleMaterial(G4Material* mat) {mat_ = mat;}
 inline void TeflonBlockHamamatsu4x4::SetIoniSD(PetIonizationSD* ionisd) {ionisd_ = ionisd;}
 inline void TeflonBlockHamamatsu4x4::SetMaxStepSize(G4double step_size) {max_step_size_ = step_size;}
+inline void TeflonBlockHamamatsu4x4::SetHoleLength(G4double hole_length) {hole_length_ = hole_length;}
 inline G4double TeflonBlockHamamatsu4x4::GetTeflonThickness() const {return teflon_block_thick_;}
 
 #endif

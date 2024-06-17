@@ -17,6 +17,7 @@
 #include <G4UserLimits.hh>
 
 TeflonBlockHamamatsu::TeflonBlockHamamatsu(): teflon_block_thick_(35.75 * mm),
+                                              hole_length_(5*mm),
                                               max_step_size_(1.*mm)
 {
 }
@@ -37,7 +38,7 @@ void TeflonBlockHamamatsu::Construct()
   G4double teflon_central_offset_y = 3.11 * mm;
   
   G4double teflon_holes_xy    = 5.75 * mm;
-  G4double teflon_holes_depth = 5    * mm;
+  G4double teflon_holes_depth = hole_length_;
   
   G4double dist_between_holes_xy = 1.75 * mm;
   
