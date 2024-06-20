@@ -10,12 +10,15 @@
 #include "TeflonBlockHamamatsu2x2.h"
 #include "PetIonizationSD.h"
 
+#include "nexus/Visibilities.h"
+
 #include <G4Box.hh>
 #include <G4LogicalVolume.hh>
 #include <G4PVPlacement.hh>
 #include <G4NistManager.hh>
 #include <G4Material.hh>
 #include <G4UserLimits.hh>
+#include <G4VisAttributes.hh>
 
 TeflonBlockHamamatsu2x2::TeflonBlockHamamatsu2x2(): teflon_block_thick_(35.75 * mm),
                                                     hole_length_(5*mm),
@@ -32,14 +35,15 @@ void TeflonBlockHamamatsu2x2::Construct()
 {
   G4double teflon_block_xy = 67 * mm;
   
-  G4double teflon_offset_x = 3.64 * mm;
-  G4double teflon_offset_y = 3.7  * mm;
+  G4double teflon_offset_x = 3.64 * mm + 0.4 * mm;
+  G4double teflon_offset_y = 3.7  * mm + 0.4 * mm;
   
   G4double teflon_central_offset_x = 3.23 * mm;
-  G4double teflon_central_offset_y = 3.11 * mm;
+  G4double teflon_central_offset_y = 3.11 * mm - 0.7 * mm;
   
   G4double dist_between_holes_xy = 1.75 * mm;
 
+  G4double teflon_holes_xy_dim = 5.95*2 * mm + dist_between_holes_xy;
   G4double teflon_holes_xy    = 5.75*2 * mm + dist_between_holes_xy;
   G4double teflon_holes_depth = hole_length_;
   
@@ -58,7 +62,7 @@ void TeflonBlockHamamatsu2x2::Construct()
   G4double dist_four_holes_xy = 2 * teflon_holes_xy + dist_between_holes_xy;
   
   G4Box* teflon_hole_solid =
-    new G4Box("ACTIVE", teflon_holes_xy/2., teflon_holes_xy/2., teflon_holes_depth/2.);
+    new G4Box("ACTIVE", teflon_holes_xy_dim/2., teflon_holes_xy_dim/2., teflon_holes_depth/2.);
 
   G4LogicalVolume* teflon_hole_logic =
     new G4LogicalVolume(teflon_hole_solid, mat_, "ACTIVE");
@@ -66,6 +70,9 @@ void TeflonBlockHamamatsu2x2::Construct()
   // Set the ACTIVE volume as an ionization sensitive det
   teflon_hole_logic->SetSensitiveDetector(ionisd_);
   teflon_hole_logic->SetUserLimits(new G4UserLimits(max_step_size_));
+  G4VisAttributes block_col = nexus::LightBlue();
+  block_col.SetForceSolid(true);
+  teflon_hole_logic->SetVisAttributes(block_col);
   
   G4double holes_pos_z = -teflon_block_thick_/2. + teflon_holes_depth/2.;
   
