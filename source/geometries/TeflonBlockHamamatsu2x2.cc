@@ -35,17 +35,16 @@ void TeflonBlockHamamatsu2x2::Construct()
 {
   G4double teflon_block_xy = 67 * mm;
   
-  G4double teflon_offset_x = 3.64 * mm + 0.4 * mm;
-  G4double teflon_offset_y = 3.7  * mm + 0.4 * mm;
+  G4double teflon_offset_x = 4.08 * mm;
+  G4double teflon_offset_y = 4.5  * mm;
   
   G4double teflon_central_offset_x = 3.23 * mm;
-  G4double teflon_central_offset_y = 3.11 * mm - 0.7 * mm;
+  G4double teflon_central_offset_y = 2.41 * mm;
   
   G4double dist_between_holes_xy = 1.75 * mm;
 
   G4double teflon_holes_xy_dim = 5.95*2 * mm + dist_between_holes_xy;
-  G4double teflon_holes_xy    = 5.75*2 * mm + dist_between_holes_xy;
-  G4double teflon_holes_depth = hole_length_;
+  G4double teflon_holes_xy     = 5.75*2 * mm + dist_between_holes_xy;
   
   G4Box* teflon_block_solid =
     new G4Box("TEFLON_BLOCK", teflon_block_xy/2., teflon_block_xy/2., teflon_block_thick_/2.);
@@ -62,7 +61,7 @@ void TeflonBlockHamamatsu2x2::Construct()
   G4double dist_four_holes_xy = 2 * teflon_holes_xy + dist_between_holes_xy;
   
   G4Box* teflon_hole_solid =
-    new G4Box("ACTIVE", teflon_holes_xy_dim/2., teflon_holes_xy_dim/2., teflon_holes_depth/2.);
+    new G4Box("ACTIVE", teflon_holes_xy_dim/2., teflon_holes_xy_dim/2., hole_length_/2.);
 
   G4LogicalVolume* teflon_hole_logic =
     new G4LogicalVolume(teflon_hole_solid, mat_, "ACTIVE");
@@ -74,7 +73,7 @@ void TeflonBlockHamamatsu2x2::Construct()
   block_col.SetForceSolid(true);
   teflon_hole_logic->SetVisAttributes(block_col);
   
-  G4double holes_pos_z = -teflon_block_thick_/2. + teflon_holes_depth/2.;
+  G4double holes_pos_z = -teflon_block_thick_/2. + hole_length_/2.;
   
   G4int copy_no = 0;
   
