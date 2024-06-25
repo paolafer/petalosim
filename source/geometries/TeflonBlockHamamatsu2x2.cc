@@ -35,8 +35,8 @@ void TeflonBlockHamamatsu2x2::Construct()
 {
   G4double teflon_block_xy = 67 * mm;
   
-  G4double teflon_offset_x = 4.08 * mm;
-  G4double teflon_offset_y = 4.5  * mm;
+  G4double teflon_offset_x = 4.1 * mm;
+  G4double teflon_offset_y = 4.1 * mm;
   
   G4double teflon_central_offset_x = 3.23 * mm;
   G4double teflon_central_offset_y = 2.41 * mm;
