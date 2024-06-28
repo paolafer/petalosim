@@ -35,16 +35,16 @@ void TeflonBlockHamamatsu15x15::Construct()
 {
   G4double teflon_block_xy = 67 * mm;
  
-  G4double dist_between_holes_x = 1.75 * mm;
-  G4double dist_between_holes_y = 1.35 * mm;
+  G4double dist_between_holes_x = 1.75 * mm * 2.5;
+  G4double dist_between_holes_y = 1.35 * mm * 3.5;
 
   G4double tile_off_x = 1.225 * mm;
   G4double tile_off_y = 1.175 * mm;
   G4double dist_between_sipms_x = 1.65 * mm;
   G4double dist_between_sipms_y = 1.55 * mm;
 
-  G4double teflon_holes_x_dim = 5.95*1.5 * mm + dist_between_sipms_x - dist_between_holes_x/2.;
-  G4double teflon_holes_y_dim = 5.85*1.5 * mm + dist_between_sipms_y - dist_between_holes_y/2.;
+  G4double teflon_holes_x_dim = 5.95*1.5 * mm + dist_between_sipms_x;
+  G4double teflon_holes_y_dim = 5.85*1.5 * mm + dist_between_sipms_y;
   // G4double teflon_holes_xy     = 5.75*1.5 * mm + dist_between_holes_xy;
   
   G4Box* teflon_block_solid =
@@ -78,9 +78,9 @@ void TeflonBlockHamamatsu15x15::Construct()
   
   // Tile 1
   for (G4int i=0; i<2; i++) {
-    G4double holes_pos_x = -tile_off_x - teflon_holes_x_dim/2. - i*(teflon_holes_x_dim + dist_between_sipms_x);
+    G4double holes_pos_x = -tile_off_x - teflon_holes_x_dim/2. - i*(teflon_holes_x_dim + dist_between_holes_x);
     for (G4int j=0; j<2; j++) {
-    G4double holes_pos_y = tile_off_y + teflon_holes_y_dim/2. + j*(teflon_holes_y_dim + dist_between_sipms_y);
+    G4double holes_pos_y = tile_off_y + teflon_holes_y_dim/2. + j*(teflon_holes_y_dim + dist_between_holes_y);
     new G4PVPlacement(0, G4ThreeVector(holes_pos_x, holes_pos_y, holes_pos_z),
                       teflon_hole_logic, "ACTIVE", teflon_block_logic,
                       false, copy_no, true);
@@ -89,9 +89,9 @@ void TeflonBlockHamamatsu15x15::Construct()
 
   // Tile 2
   for (G4int i=0; i<2; i++) {
-    G4double holes_pos_x = tile_off_x + teflon_holes_x_dim/2. + i*(teflon_holes_x_dim + dist_between_sipms_x);
+    G4double holes_pos_x = tile_off_x + teflon_holes_x_dim/2. + i*(teflon_holes_x_dim + dist_between_holes_x);
     for (G4int j=0; j<2; j++) {
-    G4double holes_pos_y = tile_off_y + teflon_holes_y_dim/2. + j*(teflon_holes_y_dim + dist_between_sipms_y);
+    G4double holes_pos_y = tile_off_y + teflon_holes_y_dim/2. + j*(teflon_holes_y_dim + dist_between_holes_y);
     new G4PVPlacement(0, G4ThreeVector(holes_pos_x, holes_pos_y, holes_pos_z),
                       teflon_hole_logic, "ACTIVE", teflon_block_logic,
                       false, copy_no, true);
@@ -100,9 +100,9 @@ void TeflonBlockHamamatsu15x15::Construct()
 
    // Tile 3
   for (G4int i=0; i<2; i++) {
-    G4double holes_pos_x = tile_off_x + teflon_holes_x_dim/2. + i*(teflon_holes_x_dim + dist_between_sipms_x);
+    G4double holes_pos_x = tile_off_x + teflon_holes_x_dim/2. + i*(teflon_holes_x_dim + dist_between_holes_x);
     for (G4int j=0; j<2; j++) {
-    G4double holes_pos_y = -tile_off_y - teflon_holes_y_dim/2. - j*(teflon_holes_y_dim + dist_between_sipms_y);
+    G4double holes_pos_y = -tile_off_y - teflon_holes_y_dim/2. - j*(teflon_holes_y_dim + dist_between_holes_y);
     new G4PVPlacement(0, G4ThreeVector(holes_pos_x, holes_pos_y, holes_pos_z),
                       teflon_hole_logic, "ACTIVE", teflon_block_logic,
                       false, copy_no, true);
@@ -111,9 +111,9 @@ void TeflonBlockHamamatsu15x15::Construct()
 
     // Tile 4
   for (G4int i=0; i<2; i++) {
-    G4double holes_pos_x = -tile_off_x - teflon_holes_x_dim/2. - i*(teflon_holes_x_dim + dist_between_sipms_x);
+    G4double holes_pos_x = -tile_off_x - teflon_holes_x_dim/2. - i*(teflon_holes_x_dim + dist_between_holes_x);
     for (G4int j=0; j<2; j++) {
-    G4double holes_pos_y = -tile_off_y - teflon_holes_y_dim/2. - j*(teflon_holes_y_dim + dist_between_sipms_y);
+    G4double holes_pos_y = -tile_off_y - teflon_holes_y_dim/2. - j*(teflon_holes_y_dim + dist_between_holes_y);
     new G4PVPlacement(0, G4ThreeVector(holes_pos_x, holes_pos_y, holes_pos_z),
                       teflon_hole_logic, "ACTIVE", teflon_block_logic,
                       false, copy_no, true);
