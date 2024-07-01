@@ -11,7 +11,8 @@
 #include "TileHamamatsuVUV.h"
 #include "PetMaterialsList.h"
 #include "PetOpticalMaterialProperties.h"
-#include "TeflonBlockHamamatsu.h"
+#include "TeflonBlockHamamatsuLargerPos.h"
+#include "TeflonBlockHamamatsuLargerNeg.h"
 #include "PetaloUtils.h"
 #include "PetIonizationSD.h"
 
@@ -125,7 +126,7 @@ void PETit::BuildBox()
   active_logic_ = box_->GetActiveVolume();
   G4double ih_z_size = box_->GetHatZSize();
 
-  TeflonBlockHamamatsu teflon_block_hama = TeflonBlockHamamatsu();
+  TeflonBlockHamamatsuLargerNeg teflon_block_hama = TeflonBlockHamamatsuLargerNeg();
   teflon_block_hama.SetHoleLength(teflon_hole_length_);
   teflon_block_hama.SetHoleMaterial(LXe);
   teflon_block_hama.SetIoniSD(ionisd);
@@ -138,11 +139,18 @@ void PETit::BuildBox()
   new G4PVPlacement(0, G4ThreeVector(0., 0., -block_z_pos), teflon_block_logic,
                     "TEFLON_BLOCK_HAMA", active_logic_, false, 0, false);
 
+  TeflonBlockHamamatsuLargerPos teflon_block_hama_pos = TeflonBlockHamamatsuLargerPos();
+  teflon_block_hama_pos.SetHoleLength(teflon_hole_length_);
+  teflon_block_hama_pos.SetHoleMaterial(LXe);
+  teflon_block_hama_pos.SetIoniSD(ionisd);
+  teflon_block_hama_pos.SetMaxStepSize(max_step_size_);
+  teflon_block_hama_pos.Construct();
+  G4LogicalVolume* teflon_block_logic_pos = teflon_block_hama_pos.GetLogicalVolume();
   G4RotationMatrix rot_teflon;
   rot_teflon.rotateY(pi);
   new G4PVPlacement(G4Transform3D(rot_teflon,
                                   G4ThreeVector(0., 0., block_z_pos)),
-                    teflon_block_logic,
+                    teflon_block_logic_pos,
                     "TEFLON_BLOCK_HAMA", active_logic_, false, 1, false);
 
   // Optical surface for teflon
